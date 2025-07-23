@@ -1,20 +1,27 @@
 import styled from 'styled-components'
 import { theme } from '../../../styles'
 
+
 //Botao Continue
 export const EnterButton = styled.TouchableOpacity`
-  background-color: #ffd740;
-  padding: 15px;
-  border-radius: 30px;
+  background-color: ${({ bg }) => bg || '#ffd740'};
+  padding: ${({ pd }) => pd || theme.metrics.px(15)}px;
+  border-radius: ${({ br }) => br || theme.metrics.px(30)}px;
   align-items: center;
-  margin-top: 20px;
-`
+  margin-top: ${({ mt }) => mt || theme.metrics.px(20)}px;
+  width: ${({ width }) => width || '100'};
+  height: ${({ height }) => height || '40'};
+  margin-right: ${({ mr }) => mr || '0px'};
+  margin-left: ${({ ml }) => ml || '0px'};
+`;
 
 export const EnterButtonText = styled.Text`
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
-`
+  color: ${({ color }) => color || 'white'};
+  font-size: ${({ ft }) =>
+    ft ? theme.metrics.px(ft) : theme.metrics.px(15)}px;
+  font-weight: ${({ fw }) => fw || 'bold'};
+`;
+
 
 //----------------
 

@@ -1,35 +1,30 @@
 import React, { useState, useEffect } from 'react'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
-import { auth } from '../../../config/firebase'
-import storage from '@react-native-firebase/storage'
-import { getFirestore, doc, setDoc } from 'firebase/firestore'
-import axios from 'axios'
-import { TouchableOpacity, Alert, ScrollView } from 'react-native'
+import { TouchableOpacity, Alert, KeyboardAvoidingView, Platform, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import * as ImagePicker from 'expo-image-picker'
+import { MaterialIcons } from '@expo/vector-icons'
 import {
-  CustomLogo,
-  CustomLabelText,
-  ButtonCadastro,
+  Header,
+  Title,
+  CustomText,
   CustomInput,
-  Line,
-  Return,
+  Button,
 } from '../../../components'
-import Checkbox from 'expo-checkbox'
 import {
-  styles,
   Container,
-  LogoContainer,
+  ButtonContainer,
   Form,
-  TitleText,
   ImgContainer,
   ImagePreview,
-  CheckBoxContainer,
-  TermsText,
-  TermsText1,
+  ImageWrapper,
 } from './styles'
-
-const db = getFirestore()
+import {
+  fetchAddressByCep,
+  formatCpf,
+  handleRegisterMotorista,
+  pickImage,
+  formatCep,
+} from './script'
+import defaultProfile from '../../../../assets/default-user.jpg'
 
 export const RegisterMotorista = () => {
   const navigation = useNavigation()
@@ -37,249 +32,266 @@ export const RegisterMotorista = () => {
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
   const [end, setEnd] = useState('')
-  const [cep, setCEP] = useState('')
-  const [vagas, setVagas] = useState('')
+  const [cep, setCep] = useState('')
+  const [RG, setRG] = useState('')
+  const [CPF, setCPF] = useState('')
   const [password, setPassword] = useState('')
   const [confPassword, setConfPassword] = useState('')
   const [cnhFrente, setCnhFrente] = useState(null)
   const [cnhVerso, setCnhVerso] = useState(null)
-  const [isChecked, setChecked] = useState(false)
-
-  const handleGetAddress = async (cep) => {
-    if (cep.length !== 8) return
-    try {
-      const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`)
-      const { logradouro, localidade, uf } = response.data
-      if (logradouro) {
-        setEnd(`${logradouro}, ${localidade} - ${uf}`)
-      } else {
-        Alert.alert('Erro', 'CEP não encontrado')
-      }
-    } catch (error) {
-      Alert.alert('Erro', 'Erro ao buscar o endereço')
-    }
-  }
-
-  const handleRegister = async () => {
-    if (
-      !username ||
-      !phone ||
-      !email ||
-      !end ||
-      !cep ||
-      !vagas ||
-      !password ||
-      !confPassword
-    ) {
-      Alert.alert(
-        'Atenção!',
-        'Preencha todos os campos e insira as imagens da CNH.'
-      )
-      return
-    }
-
-    if (password !== confPassword) {
-      Alert.alert('Erro', 'As senhas não coincidem')
-      return
-    }
-
-    createUserWithEmailAndPassword(auth, email, password)
-      .then(async (userCredential) => {
-        const user = userCredential.user
-        try {
-          await setDoc(doc(db, 'motoristas', user.uid), {
-            username,
-            phone,
-            email,
-            address: end,
-            cep,
-            vagas,
-            senha: password,
-            type: 'motorista',
-          })
-          Alert.alert('Sucesso', 'Cadastro realizado com sucesso!')
-          navigation.navigate('MainHome')
-        } catch (error) {
-          console.error('Erro ao salvar dados no Firestore:', error)
-          Alert.alert(
-            'Erro',
-            'Não foi possível salvar seus dados. Tente novamente.'
-          )
-        }
-      })
-      .catch((error) => {
-        const errorCode = error.code
-        const errorMessage = error.message
-        console.log(errorMessage)
-        Alert.alert('Erro', 'Erro ao criar conta. Tente novamente.')
-      })
-  }
+  const [image, setImage] = useState(null)
 
   useEffect(() => {
-    if (cep.length === 8) {
-      handleGetAddress(cep)
-    }
+    fetchAddressByCep(cep, setEnd)
   }, [cep])
 
-  // Ao selecionar a imagem, chame saveImageLocally e passe o caminho da imagem não criptografada
-  const pickImage = async (setImage, filename) => {
-    const permissionResult =
-      await ImagePicker.requestMediaLibraryPermissionsAsync()
-
-    if (!permissionResult.granted) {
-      Alert.alert('Erro', 'É necessário permitir o acesso à galeria!')
-      return
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    })
+  const handleCepChange = (text) => {
+    setCep(formatCep(text))
   }
 
-  // Função para fazer o upload da imagem para o Firebase Storage
-  const uploadImageToStorage = async (uri, fileName) => {
-    const reference = storage().ref(fileName)
-    await reference.putFile(uri) // Faz o upload da imagem diretamente do URI
-    const downloadUrl = await reference.getDownloadURL() // Recupera a URL de download da imagem
-    return downloadUrl
+  const handleCpfChange = (text) => {
+    setCPF(formatCpf(text))
   }
 
   return (
-    <Container>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <LogoContainer>
-          <TouchableOpacity style={styles.return}>
-            <Return
-              style={styles.return}
-              onPress={() => navigation.navigate('Splash')}
-            />
-          </TouchableOpacity>
-          <CustomLogo style={styles.img} />
-        </LogoContainer>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
+    >
+      <Container contentContainerStyle={{ paddingBottom: 30 }}
+        keyboardShouldPersistTaps="handled">
+
+        <Header bgColor="blue" txtColor="text" title="CADASTRO MOTORISTA">Via Scholae</Header>
+        <Title ft={35} mt={25} mb={1}>Faça seu Cadastro:</Title>
 
         <Form>
-          <TitleText>Registro Motorista</TitleText>
-          <Line style={styles.line}></Line>
-
-          <CustomLabelText>Digite seu nome completo</CustomLabelText>
+          <ImageWrapper>
+            <Image
+              source={image ? { uri: image } : defaultProfile}
+              style={{ width: '100%', height: '100%' }}
+              resizeMode="cover"
+            />
+          </ImageWrapper>
+          <ButtonContainer style={{ marginBottom: 20 }}>
+            <Button
+              title={image ? "Alterar foto" : "Escolher foto"}
+              color="white"
+              pd={15}
+              br={20}
+              width="60%"
+              height={45}
+              ft={16}
+              fw="bold"
+              onPress={() => pickImage(setImage)}
+            />
+          </ButtonContainer>
           <CustomInput
-            placeholder="Insira seu nome"
+            placeholder="Nome"
             onChangeText={setUsername}
             value={username}
             maxLength={30}
+            height={50}
+            width={330}
+            mb={15}
+            ph={20}
+            bgColor="#e8e8e8"
           />
-
-          <CustomLabelText>Digite seu telefone</CustomLabelText>
           <CustomInput
-            placeholder="Insira seu número de telefone"
-            keyboardType="phone-pad"
-            onChangeText={setPhone}
-            value={phone}
-            maxLength={11}
-          />
-
-          <CustomLabelText>Digite seu Email</CustomLabelText>
-          <CustomInput
-            placeholder="Insira seu Email"
+            placeholder="Email"
             keyboardType="email-address"
             onChangeText={setEmail}
             value={email}
-            maxLength={100}
+            height={50}
+            width={330}
+            mb={15}
+            ph={20}
+            bgColor="#e8e8e8"
           />
-
-          <CustomLabelText>Digite seu Endereço</CustomLabelText>
           <CustomInput
-            placeholder="Insira seu Endereço"
+            placeholder="Telefone"
+            keyboardType="phone-pad"
+            onChangeText={setPhone}
+            isPhone
+            value={phone}
+            maxLength={11}
+            height={50}
+            width={330}
+            mb={15}
+            ph={20}
+            bgColor="#e8e8e8"
+          />
+          <CustomInput
+            placeholder="CEP"
+            keyboardType="phone-pad"
+            onChangeText={handleCepChange}
+            value={cep}
+            height={50}
+            width={330}
+            mb={15}
+            ph={20}
+            bgColor="#e8e8e8"
+          />
+          <CustomInput
+            placeholder="Endereço"
             onChangeText={setEnd}
             value={end}
             maxLength={100}
+            height={50}
+            width={330}
+            mb={15}
+            ph={20}
+            bgColor="#e8e8e8"
           />
-
-          <CustomLabelText>Digite seu CEP</CustomLabelText>
           <CustomInput
-            placeholder="Insira seu CEP"
-            onChangeText={setCEP}
-            value={cep}
-            maxLength={8}
-            keyboardType="phone-pad"
+            placeholder="RG"
+            onChangeText={setRG}
+            value={RG}
+            maxLength={10}
+            height={50}
+            width={330}
+            mb={15}
+            ph={20}
+            bgColor="#e8e8e8"
           />
-
-          <CustomLabelText>Insira a quantidade de vagas na van</CustomLabelText>
           <CustomInput
-            placeholder="Insira a quantidades de assentos que a van possui"
-            keyboardType="phone-pad"
-            onChangeText={setVagas}
-            value={vagas}
-            maxLength={2}
+            placeholder="CPF"
+            onChangeText={handleCpfChange}
+            value={CPF}
+            maxLength={14}
+            height={50}
+            width={330}
+            mb={15}
+            ph={20}
+            bgColor="#e8e8e8"
           />
-
-          <CustomLabelText>Digite uma senha</CustomLabelText>
           <CustomInput
-            placeholder="Digite uma senha"
-            secureTextEntry
+            placeholder="Senha"
             onChangeText={setPassword}
+            isPassword
             value={password}
             maxLength={16}
+            height={50}
+            width={330}
+            mb={15}
+            ph={20}
+            bgColor="#e8e8e8"
           />
-
-          <CustomLabelText>Confirme sua senha</CustomLabelText>
           <CustomInput
-            placeholder="Confirme sua senha"
-            secureTextEntry
+            placeholder="Confirmar Senha"
             onChangeText={setConfPassword}
+            isPassword
             value={confPassword}
-            maxLength={16}
+            height={50}
+            width={330}
+            mb={15}
+            ph={20}
+            bgColor="#e8e8e8"
           />
 
-          {/* Campo para imagem da CNH (frente) */}
-          <CustomLabelText>Adicione a frente da CNH</CustomLabelText>
-          <TouchableOpacity
-            title={cnhFrente ? 'Alterar imagem' : 'Escolha uma imagem'}
-            onPress={() => pickImage(setCnhFrente, 'cnhFrente.jpg')}
-          >
+          {/* Campo para imagem da CNH */}
+          <CustomText ft={23} mt={10} mb={20} txtColor="black">Insira uma foto frente e verso da CNH</CustomText>
+          <Button title="Selecionar Frente CNH" width="70%" onPress={() => pickImage(setCnhFrente)} />
+          {cnhFrente && (
             <ImgContainer>
-              <CustomLabelText>Selecionar Imagem</CustomLabelText>
-              {cnhFrente && (
-                <ImagePreview source={{ uri: cnhFrente }} resizeMode="cover" />
-              )}
+              <ImagePreview source={{ uri: cnhFrente }} resizeMode="cover" />
+              <TouchableOpacity
+                style={{
+                  position: 'absolute',
+                  top: 5,
+                  right: 5,
+                  backgroundColor: 'rgba(0,0,0,0.6)',
+                  borderRadius: 15,
+                  padding: 5,
+                }}
+                onPress={() =>
+                  Alert.alert(
+                    'Remover imagem',
+                    'Deseja remover a imagem "Frente da CNH"?',
+                    [
+                      { text: 'Cancelar', style: 'cancel' },
+                      { text: 'Remover', onPress: () => setCnhFrente(null), style: 'destructive' },
+                    ]
+                  )
+                }
+              >
+                <MaterialIcons name="delete" size={20} color="white" />
+              </TouchableOpacity>
             </ImgContainer>
-          </TouchableOpacity>
+          )}
 
-          <CustomLabelText>Adicione o verso da CNH</CustomLabelText>
-          <TouchableOpacity
-            title={cnhVerso ? 'Alterar imagem' : 'Escolha uma imagem'}
-            onPress={() => pickImage(setCnhVerso, 'cnhVerso.jpg')}
-          >
+          <Button title="Selecionar Verso CNH" width="70%" onPress={() => pickImage(setCnhVerso)} />
+          {cnhVerso && (
             <ImgContainer>
-              <CustomLabelText>Selecionar Imagem</CustomLabelText>
-              {cnhVerso && (
-                <ImagePreview source={{ uri: cnhVerso }} resizeMode="cover" />
-              )}
+              <ImagePreview source={{ uri: cnhVerso }} resizeMode="cover" />
+              <TouchableOpacity
+                style={{
+                  position: 'absolute',
+                  top: 5,
+                  right: 5,
+                  backgroundColor: 'rgba(0,0,0,0.6)',
+                  borderRadius: 15,
+                  padding: 5,
+                }}
+                onPress={() =>
+                  Alert.alert(
+                    'Remover imagem',
+                    'Deseja remover a imagem "Verso da CNH"?',
+                    [
+                      { text: 'Cancelar', style: 'cancel' },
+                      { text: 'Remover', onPress: () => setCnhVerso(null), style: 'destructive' },
+                    ]
+                  )
+                }
+              >
+                <MaterialIcons name="delete" size={20} color="white" />
+              </TouchableOpacity>
             </ImgContainer>
-          </TouchableOpacity>
+          )}
 
-          <CheckBoxContainer>
-            <Checkbox
-              value={isChecked}
-              onValueChange={setChecked}
-              color={isChecked ? '#E1B415' : undefined}
+          <CustomText ft={20} mt={10} mb={20} txtColor="black">
+            Ja possui cadastro?{' '}
+            <CustomText
+              ft={20}
+              txtColor="cyan"
+              style={{ textDecorationLine: 'underline' }}
+              onPress={() => navigation.navigate('Login')}
+            >
+              Faça login aqui!
+            </CustomText>
+          </CustomText>
+
+          <ButtonContainer>
+            <Button
+              title="Continuar"
+              color="white"
+              pd={15}
+              br={20}
+              width="48%"
+              height={45}
+              ft={16}
+              fw="bold"
+              onPress={() =>
+                handleRegisterMotorista({
+                  username,
+                  phone,
+                  email,
+                  end,
+                  cep,
+                  RG,
+                  CPF,
+                  password,
+                  confPassword,
+                  cnhFrente,
+                  cnhVerso,
+                  image,
+                  navigation,
+                })
+              }
             />
-            <TermsText1>Aceito os </TermsText1>
-            <TermsText onPress={() => navigation.navigate('TermosdeUso')}>
-              Termos de Uso
-            </TermsText>
-          </CheckBoxContainer>
-
-          <ButtonCadastro onPress={handleRegister}>
-            <CustomLabelText style={{ color: '#FFF' }}>
-              Cadastrar
-            </CustomLabelText>
-          </ButtonCadastro>
+          </ButtonContainer>
         </Form>
-      </ScrollView>
-    </Container>
+      </Container>
+    </KeyboardAvoidingView>
   )
 }

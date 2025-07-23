@@ -1,57 +1,67 @@
 import React, { createContext, useContext, useState } from 'react'
-import { collection, query, where, getDocs } from 'firebase/firestore'
+import { doc, getDoc } from 'firebase/firestore'
 import { auth, db } from '../config/firebase'
-import { onAuthStateChanged, signOut } from 'firebase/auth'
+import {
+  onAuthStateChanged,
+  signOut,
+  signInWithEmailAndPassword,
+} from 'firebase/auth'
 
 // Cria um contexto para o usuário
 const UserContext = createContext(null)
+
 
 // Provedor de contexto para gerenciar o estado do usuário
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
 
+  const refreshUserData = async () => {
+    const currentUser = auth.currentUser
+    if (!currentUser) return
+
+    const docResp = await getDoc(doc(db, 'responsaveis', currentUser.uid))
+    if (docResp.exists()) {
+      setUser({ uid: currentUser.uid, tipo: 'responsavel', ...docResp.data() })
+      return
+    }
+
+    const docMotorista = await getDoc(doc(db, 'motoristas', currentUser.uid))
+    if (docMotorista.exists()) {
+      setUser({ uid: currentUser.uid, tipo: 'motorista', ...docMotorista.data() })
+      return
+    }
+  }
+
+
   // Função para autenticar o usuário no Firebase
-  const login = async (phone, password) => {
+  const login = async (email, password) => {
     try {
-      // Buscar na coleção "motoristas"
-      const motoristaRef = collection(db, 'motoristas')
-      const motoristaQuery = query(motoristaRef, where('phone', '==', phone))
-      const motoristaSnapshot = await getDocs(motoristaQuery)
-
-      // Buscar na coleção "responsaveis"
-      const responsavelRef = collection(db, 'responsaveis')
-      const responsavelQuery = query(
-        responsavelRef,
-        where('phone', '==', phone)
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
       )
-      const responsavelSnapshot = await getDocs(responsavelQuery)
+      const user = userCredential.user
 
-      // Verifica se encontrou o motorista e se a senha está correta
-      if (!motoristaSnapshot.empty) {
-        const motoristaData = motoristaSnapshot.docs[0].data()
-        const motoristaId = motoristaSnapshot.docs[0].id // Pega o ID do motorista
-        if (motoristaData.senha === password) {
-          setUser({ ...motoristaData, id: motoristaId }) // Armazena os dados do motorista com o ID
-          return
-        }
+      // Tenta buscar primeiro em "responsaveis"
+      const docResp = await getDoc(doc(db, 'responsaveis', user.uid))
+      if (docResp.exists()) {
+        setUser({ uid: user.uid, tipo: 'responsavel', ...docResp.data() })
+        return
       }
 
-      // Verifica se encontrou o responsável e se a senha está correta
-      if (!responsavelSnapshot.empty) {
-        const responsavelData = responsavelSnapshot.docs[0].data()
-        const responsavelId = responsavelSnapshot.docs[0].id // Pega o ID do responsável
-        if (responsavelData.senha === password) {
-          setUser({ ...responsavelData, id: responsavelId }) // Armazena os dados do responsável com o ID
-          return
-        }
+      // Se não encontrou, tenta em "motoristas"
+      const docMotorista = await getDoc(doc(db, 'motoristas', user.uid))
+      if (docMotorista.exists()) {
+        setUser({ uid: user.uid, tipo: 'motorista', ...docMotorista.data() })
+        return
       }
 
-      // Se não encontrar o usuário ou a senha estiver errada
-      throw new Error('Número de telefone ou senha incorretos.')
+      throw new Error('Usuário autenticado mas não encontrado no Firestore.')
     } catch (error) {
       console.error('Erro ao fazer login:', error)
-      throw new Error('Credenciais inválidas')
+      throw new Error('E-mail ou senha incorretos.')
     }
   }
 
@@ -67,16 +77,46 @@ export const UserProvider = ({ children }) => {
 
   // Monitorando o estado de autenticação para persistir o login
   React.useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser)
-      setLoading(false) // Para indicar que a verificação de estado foi concluída
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        // Tenta buscar em ambas as coleções
+        const docResp = await getDoc(doc(db, 'responsaveis', currentUser.uid))
+        if (docResp.exists()) {
+          setUser({
+            uid: currentUser.uid,
+            tipo: 'responsavel',
+            ...docResp.data(),
+          })
+          setLoading(false)
+          return
+        }
+
+        const docMotorista = await getDoc(
+          doc(db, 'motoristas', currentUser.uid)
+        )
+        if (docMotorista.exists()) {
+          setUser({
+            uid: currentUser.uid,
+            tipo: 'motorista',
+            ...docMotorista.data(),
+          })
+          setLoading(false)
+          return
+        }
+
+        // Se não encontrou o usuário nas coleções
+        setUser(currentUser)
+      } else {
+        setUser(null)
+      }
+      setLoading(false)
     })
 
     return unsubscribe
   }, [])
 
   return (
-    <UserContext.Provider value={{ user, setUser, login, logout }}>
+    <UserContext.Provider value={{ user, setUser, login, logout, refreshUserData }}>
       {!loading && children}
     </UserContext.Provider>
   )

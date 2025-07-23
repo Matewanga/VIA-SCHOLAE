@@ -7,7 +7,6 @@ export const ProfilePic = ({ uri, style }) => {
   return (
     <Image
       style={[styles.profilePic, style]}
-      source={uri ? { uri } : require('../../../../assets/Foto-User-teste.jpg')}
     />
   )
 }

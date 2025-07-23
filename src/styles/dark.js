@@ -5,8 +5,11 @@ export const dark = {
   text: '#EEEEEE', // Branco
   textsecondary: '#A7A6A6', // Cinza
   yellow: '#E1B415', // Amarelo
-  blue: '#0a1a4f', // Azul
+  blue: '#0e194d', // Azul
+  cyan: '#00c4cc', // Ciano
   black: '#262626', // Preto
   border: '#565656', // Cinza
   gray: '#8C8C8C',
+  white: '#FFFFFF', // Branco
+  darkblue: '#0e194d' // Azul Escuro
 }

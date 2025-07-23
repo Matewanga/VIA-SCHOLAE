@@ -25,7 +25,6 @@ import {
   YourAccount,
   UpdatePassword,
   RegisterMotorista,
-  ProfileScreen,
   RegisterCrianca,
   ExibirCriancas,
   PerfilSearch,
@@ -33,6 +32,7 @@ import {
   ExibirRotas,
   RotaMap,
   Vagas,
+  EditUser,
 } from '../screens'
 
 export const BottomRoute = () => {
@@ -136,17 +136,12 @@ export const Routes = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="ProfileScreen"
-        component={ProfileScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
         name="RegisterCrianca"
         component={RegisterCrianca}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="ExibirCrianca"
+        name="ExibirCriancas"
         component={ExibirCriancas}
         options={{ headerShown: false }}
       />
@@ -204,6 +199,11 @@ export const Routes = () => {
       <Stack.Screen
         name="UpdatePassword"
         component={UpdatePassword}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="EditUser"
+        component={EditUser}
         options={{ headerShown: false }}
       />
       <Stack.Screen
