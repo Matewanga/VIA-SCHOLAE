@@ -24,25 +24,3 @@ export const SubDescription = styled.Text`
   color: #262626;
 `;
 
-// export const Button = styled.TouchableOpacity`
-//   background-color: #fcdc3b;
-//   width: 150px;
-//   border-radius: 20px;
-//   padding: 10px 30px;
-//   align-self: center;
-//   margin-top: 25px;
-// `;
-
-// export const ButtonText = styled.Text`
-//   font-size: 16px;
-//   font-weight: bold;
-//   color: #FFFFFF;
-//   text-align: center;
-// `;
-
-export const ImagePlaceholder = styled.View`
-  margin-top: 40px;
-  height: 180px;
-  justify-content: center;
-  align-items: center;
-`;

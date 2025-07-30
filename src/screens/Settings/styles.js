@@ -5,49 +5,60 @@ import { theme } from '../../styles'
 export const Container = styled.View`
   flex: 1;
   background: ${props => props.theme.background};
-  padding: ${theme.metrics.px(20)}px;
   justify-content: flex-start;
 `
 
-export const Header = styled.View`
+export const BtnProfile = styled.TouchableOpacity`
   flex-direction: row;
-`
-
-export const TitleText = styled.Text`
-  font-size: ${theme.metrics.px(40)}px;
-  fon-weight: bold;
-  margin-bottom: ${theme.metrics.px(20)}px;
-  margin-top: ${theme.metrics.px(19)}px;
-  margin-left: ${theme.metrics.px(20)}px;
-  color: ${props => props.theme.text};
-`
-
-export const TextApp = styled.Text`
-  font-size: ${theme.metrics.px(18)}px;
-  font-weight: bold;
-  margin-bottom: ${theme.metrics.px(10)}px;
-  color: ${props => props.theme.text};
-`
-export const LogoutButton = styled.TouchableOpacity`
-  position: absolute;
-  bottom: ${theme.metrics.px(40)}px;
-  border-radius: ${theme.metrics.px(8)}px;
-  border-width: ${theme.metrics.px(2)}px;
-  border-color: ${props => props.theme.yellow};
   align-items: center;
   align-self: center;
-  width: ${theme.metrics.px(275)}px;
-  height: ${theme.metrics.px(30)}px;
-`;
+  background: ${(props) => props.theme.primary};
+  padding: ${theme.metrics.px(15)}px;
+  border-radius: ${theme.metrics.px(10)}px;
+  margin-bottom: ${theme.metrics.px(30)}px;
+  width: ${theme.metrics.px(380)}px;
+  height: ${theme.metrics.px(153)}px;
+`
+export const UserAvatar = styled.Image`
+  width: 100px;
+  height: 100px;
+  border-radius: 100px;
+  margin-bottom: 10px;
+`
+export const ProfileInfo = styled.View`
+  flex: 1;
+  padding: 10px;
+`
+export const ProfileName = styled.Text`
+  font-size: ${theme.metrics.px(25)}px;
+  font-weight: bold;
+  color: ${(props) => props.theme.text};
+`
+export const ProfilePhone = styled.Text`
+  font-size: ${theme.metrics.px(15)}px;
+  color: ${(props) => props.theme.textsecondary};
+`
+export const ProfileEmail = styled.Text`
+  font-size: ${theme.metrics.px(15)}px;
+  color: ${(props) => props.theme.textsecondary};
+`
 
-export const LogoutButtonText = styled.Text`
-  color: ${props => props.theme.text};
-  font-size: ${theme.metrics.px(18)}px;
-  top: ${theme.metrics.px(2)}px;
-`;
-
-export const styles = StyleSheet.create({
-  return: {
-    marginTop: 25,
-  },
-});
+export const BtnYourAccount = styled.TouchableOpacity`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-vertical: ${theme.metrics.px(15)}px;
+  border-bottom-width: ${theme.metrics.px(1)}px;
+  border-bottom-color: ${(props) => props.theme.black};
+`
+export const IconAcContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+`
+export const TextAcContainer = styled.View`
+  margin-left: ${theme.metrics.px(10)}px;
+`
+export const OptionTextAc = styled.Text`
+  font-size: ${theme.metrics.px(16)}px;
+  color: ${(props) => props.theme.text};
+`

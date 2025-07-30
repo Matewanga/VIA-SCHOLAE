@@ -13,7 +13,6 @@ import {
     ButtonsWrapper,
 } from './styles'
 import { useUser } from '../../database'
-import { FontAwesome, Feather } from '@expo/vector-icons'
 
 export const Account = () => {
     const { user } = useUser()
@@ -33,6 +32,7 @@ export const Account = () => {
                     logoSize={50}
                     height="100"
                     mb="40"
+                    size={40}
                 />
 
                 <ProfileImage
@@ -56,8 +56,8 @@ export const Account = () => {
                         width="65%"
                         height={70}
                         ft={20}
-                        fw="bold" 
-                        onPress={() => navigation.navigate('ExibirCriancas')}/>
+                        fw="bold"
+                        onPress={() => navigation.navigate('ExibirCriancas')} />
                     <Button
                         title="Configurações"
                         color="black"
@@ -66,9 +66,9 @@ export const Account = () => {
                         width="65%"
                         height={70}
                         ft={20}
-                        fw="bold" />
-
-
+                        fw="bold"
+                        onPress={() => navigation.navigate('Settings')}
+                    />
                 </ButtonsWrapper>
             </Container>
         </KeyboardAvoidingView>

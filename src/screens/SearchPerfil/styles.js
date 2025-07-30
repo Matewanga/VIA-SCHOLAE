@@ -1,6 +1,6 @@
 import styled from 'styled-components/native';
 import { StyleSheet } from 'react-native'
-import { theme } from '../../../styles'
+import { theme } from '../../styles'
 export const Container = styled.View`
   flex: 1;
   background: ${props => props.theme.background};
@@ -36,7 +36,12 @@ export const ButtonContainer = styled.View`
   margin-top: ${theme.metrics.px(5)}px;
   margin-bottom: ${theme.metrics.px(45)}px;
 `
-
+export const UserAvatar = styled.Image`
+  width: 80px;
+  height: 80px;
+  border-radius: 100px;
+  margin-bottom: 10px;
+`
 export const ProfileName = styled.Text`
   font-size: ${theme.metrics.px(30)}px;
   margin-top: ${theme.metrics.px(25)}px;

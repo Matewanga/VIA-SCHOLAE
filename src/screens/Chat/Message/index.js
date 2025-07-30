@@ -1,28 +1,20 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useNavigation, useRoute } from '@react-navigation/native'
-import { GiftedChat } from 'react-native-gifted-chat'
-import { Text, TouchableOpacity } from 'react-native'
+import { GiftedChat, Avatar } from 'react-native-gifted-chat'
 import {
-  collection,
-  addDoc,
-  onSnapshot,
-  query,
-  orderBy,
-} from 'firebase/firestore'
-import { db } from '../../../config/firebase'
-import { Return, ProfilePic } from '../../../components'
-import {
-  styles,
   Container,
-  Header,
-  Name,
-  SubTitles,
-  HeaderInfo,
+  HeaderContainer,
+  LeftBox,
+  BackButton,
+  UserAvatar,
+  UserName,
   renderCustomBubble,
   renderCustomInputToolbar,
   renderCustomSend,
 } from './styles'
 import { useUser } from '../../../database'
+import { sendMessage, subscribeMessages } from './script'
+import Icon from 'react-native-vector-icons/Ionicons'
 
 export const Message = () => {
   const navigation = useNavigation()
@@ -32,72 +24,77 @@ export const Message = () => {
   const [messages, setMessages] = useState([])
 
   useEffect(() => {
-    async function getMessages() {
-      // Agora as mensagens são obtidas da subcoleção "mensagens" dentro de um chat específico
-      const messagesRef = collection(db, 'Conversas', chatId, 'mensagens')
-      const q = query(messagesRef, orderBy('createdAt', 'desc'))
-
-      onSnapshot(q, (snapshot) => {
-        setMessages(
-          snapshot.docs.map((doc) => ({
-            _id: doc.id,
-            createdAt: doc.data().createdAt.toDate(),
-            text: doc.data().text,
-            user: doc.data().user,
-          }))
-        )
-      })
-    }
-    getMessages()
-  }, [chatId]) // Dependência de chatId, para buscar as mensagens de um chat específico
+    const unsubscribe = subscribeMessages(chatId, (msgs) => {
+      setMessages(msgs)
+    })
+    return () => unsubscribe()
+  }, [chatId])
 
   const mensagemEnviada = useCallback(
-    (messages = []) => {
-      setMessages((previousMessages) => {
+    async (messages = []) => {
+      setMessages((previousMessages) =>
         GiftedChat.append(previousMessages, messages)
-      })
+      )
 
-      const { _id, createdAt, text, user } = messages[0]
+      const { _id, createdAt, text } = messages[0]
 
-      // Adiciona a mensagem à subcoleção "mensagens" dentro do chat específico
-      addDoc(collection(db, 'Conversas', chatId, 'mensagens'), {
+      const msgToSend = {
         _id,
         createdAt,
         text,
-        user,
-      })
+        user: {
+          _id: user.uid,
+          name: user.username,
+          avatar: user.profileImageUrl,
+        },
+      }
+
+      try {
+        // Passa o perfil do outro usuário para atualizar o chat corretamente
+        await sendMessage(chatId, msgToSend, user, profile)
+      } catch (error) {
+        console.error('Erro ao enviar mensagem:', error)
+      }
     },
-    [chatId] // O chatId é a chave para a subcoleção de mensagens
+    [chatId, user, profile]
   )
 
   return (
     <Container>
-      <Header>
-        <TouchableOpacity onPress={() => navigation.navigate('Mensagens')}>
-          <Return style={styles.back} />
-        </TouchableOpacity>
-        <ProfilePic style={styles.pic} />
-        <HeaderInfo>
-          <Name>
-            <Text>{profile.username}</Text>
-          </Name>
-          <SubTitles>
-            <Text>{profile.phone}</Text>
-          </SubTitles>
-        </HeaderInfo>
-      </Header>
+      <HeaderContainer>
+        <LeftBox>
+          <BackButton onPress={() => navigation.goBack()}>
+            <Icon name="chevron-back" size={40} color="#fff" />
+          </BackButton>
+
+          <UserAvatar source={{ uri: profile.profileImageUrl }} />
+
+          <UserName>{profile.username}</UserName>
+        </LeftBox>
+      </HeaderContainer>
 
       <GiftedChat
         messages={messages}
         onSend={(msg) => mensagemEnviada(msg)}
         user={{
-          _id: user.id,
+          _id: user.uid,
           name: user.username,
-          avatar: user.avatar || '',
+          avatar: user.avatar || user.profileImageUrl,
         }}
         renderBubble={renderCustomBubble}
         renderInputToolbar={renderCustomInputToolbar}
         renderSend={renderCustomSend}
+        renderAvatar={(props) => (
+          <Avatar
+            {...props}
+            imageStyle={{
+              left: { width: 36, height: 36, borderRadius: 18, marginRight: 2 },
+              right: { width: 36, height: 36, borderRadius: 18, marginLeft: 2 },
+            }}
+          />
+        )}
+        renderAvatarOnTop={true}
+        showAvatarForEveryMessage={true}
       />
     </Container>
   )

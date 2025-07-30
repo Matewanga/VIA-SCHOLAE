@@ -8,5 +8,7 @@ export const Input = styled.TextInput`
   padding-horizontal: ${({ ph }) => ph || `${theme.metrics.px(20)}px`};
   border-radius: ${({ br }) => br || `${theme.metrics.px(15)}px`};
   background-color: ${({ bgColor }) => bgColor || '#FFFFFF'};
+  border-width: ${({ bw }) => bw || '0px'};
+  border-color: ${({ bc }) => bc || 'transparent'};
   align-self: center;
 `;

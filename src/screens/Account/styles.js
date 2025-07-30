@@ -12,7 +12,7 @@ export const Form = styled.View`
 `
 
 export const Info = styled.View`
-  background-color: ${props => props.theme.darkblue};
+  background-color: #2d3070ff;
   padding-top: 100px;
   padding-horizontal: ${theme.metrics.px(20)}px;
   width: 100%;

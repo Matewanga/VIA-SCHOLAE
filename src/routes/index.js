@@ -12,6 +12,7 @@ import {
   EditName,
   EditPhone,
   EditEnd,
+  EditChildren,
   Home,
   Message,
   Chat,
@@ -116,18 +117,8 @@ export const Routes = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="MainHome"
-        component={BottomRoute}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
         name="Register"
         component={Register}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="TermosdeUso"
-        component={TermosdeUso}
         options={{ headerShown: false }}
       />
       <Stack.Screen
@@ -141,12 +132,12 @@ export const Routes = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="ExibirCriancas"
-        component={ExibirCriancas}
+        name="MainHome"
+        component={BottomRoute}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="MainAccount"
+        name="MainChat"
         component={BottomRoute}
         options={{ headerShown: false }}
       />
@@ -156,20 +147,31 @@ export const Routes = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
+        name="MainAccount"
+        component={BottomRoute}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="TermosdeUso"
+        component={TermosdeUso}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ExibirCriancas"
+        component={ExibirCriancas}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
         name="PerfilSearch"
         component={PerfilSearch}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="MainChat"
-        component={BottomRoute}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
         name="Message"
         component={Message}
-        options={{ headerShown: false,
-         }}
+        options={{
+          headerShown: false,
+        }}
       />
       <Stack.Screen
         name="Settings"
@@ -179,11 +181,6 @@ export const Routes = () => {
       <Stack.Screen
         name="Accessibility"
         component={Accessibility}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="YourAccount"
-        component={YourAccount}
         options={{ headerShown: false }}
       />
       <Stack.Screen
@@ -197,38 +194,13 @@ export const Routes = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="UpdatePassword"
-        component={UpdatePassword}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
         name="EditUser"
         component={EditUser}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="EditProfile"
-        component={EditProfile}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="EditEmail"
-        component={EditEmail}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="EditName"
-        component={EditName}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="EditPhone"
-        component={EditPhone}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="EditEnd"
-        component={EditEnd}
+        name="EditChildren"
+        component={EditChildren}
         options={{ headerShown: false }}
       />
       <Stack.Screen

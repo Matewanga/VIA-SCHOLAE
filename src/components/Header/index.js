@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image } from 'react-native'
+import { Image, TouchableOpacity } from 'react-native'
 import { Container, Branding, PageTitle, TopRow, LeftBox, RightBox } from './styles'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { useTheme } from 'styled-components/native'
@@ -9,13 +9,14 @@ export const Header = ({
   bgColor,
   mb,
   txtColor,
-  color,
+  color = "black",
   iconName = 'menu',
   onIconPress,
   showBranding = true,
   showTitle = true,
   logoSource = null,
   logoSize = 52,
+  size = 28,
   height,
   children
 }) => {
@@ -25,16 +26,18 @@ export const Header = ({
   return (
     <Container bgColor={bgColor} height={height} mb={mb}>
       <TopRow>
-        <LeftBox>
-          <Icon
-            name={iconName}
-            size={28}
-            color={iconColor}
-            onPress={onIconPress}
-          />
-        </LeftBox>
+        <TouchableOpacity>
+          <LeftBox>
+            <Icon
+              name={iconName}
+              size={size}
+              color={iconColor}
+              onPress={onIconPress}
+            />
+          </LeftBox>
+        </TouchableOpacity>
 
-        {showBranding && <Branding txtColor={txtColor}>{children}</Branding>}
+        {showBranding && <Branding txtColor={txtColor}>Via Scholae</Branding>}
 
         <RightBox>
           {logoSource && (
@@ -46,7 +49,7 @@ export const Header = ({
         </RightBox>
       </TopRow>
 
-      {showTitle && <PageTitle>{title}</PageTitle>}
+      {showTitle && <PageTitle>{children}</PageTitle>}
     </Container>
   )
 }

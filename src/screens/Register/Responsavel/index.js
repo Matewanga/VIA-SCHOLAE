@@ -47,7 +47,7 @@ export const Register = () => {
       keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
     >
       <Container contentContainerStyle={{ paddingBottom: 30 }} keyboardShouldPersistTaps="handled">
-        <Header bgColor="blue" txtColor="text" title="CADASTRO RESPONSÁVEL">Via Scholae</Header>
+        <Header bgColor="blue" txtColor="text" size={40} color="white">CADASTRO RESPONSÁVEL</Header>
         <Title ft={35} mt={25} mb={1}>
           Faça seu Cadastro:
         </Title>

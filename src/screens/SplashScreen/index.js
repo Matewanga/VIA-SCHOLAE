@@ -5,7 +5,6 @@ import {
   Container,
   Description,
   SubDescription,
-  ImagePlaceholder,
 } from './styles'
 
 export const Initial = () => {
@@ -17,7 +16,7 @@ export const Initial = () => {
 
   return (
     <Container>
-      <Header txtColor="black" color="black" width="500">Via Scholae</Header>
+      <Header txtColor="black" color="black" width="500" size={40}>Via Scholae</Header>
       <Title
         txtColor="blue"
         style={{
@@ -38,10 +37,8 @@ export const Initial = () => {
         Transporte escolar inteligente na palma da sua mão.
       </SubDescription>
 
-      <Button title="Iniciar" width={230} pd={10} br={20} ft={25} onPress={handleStart}/>
+      <Button title="Iniciar" width={230} pd={10} br={20} ft={25} onPress={handleStart} />
 
-      <ImagePlaceholder>
-      </ImagePlaceholder>
     </Container>
   )
 }

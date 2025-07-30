@@ -1,20 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { FlatList, Alert, TouchableOpacity, View, Text } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import { db } from '../../config/firebase'
-import { collection, query, where, getDocs } from 'firebase/firestore'
 import { useUser } from '../../database'
-import { Container, Card, Foto, Idade, Nome } from './styles'
+import { Container, Card, Foto } from './styles'
 import { Button, Header, CustomText, Title } from '../../components'
 import { Ionicons } from '@expo/vector-icons'
+import { fetchCriancasDoResponsavel } from './script'
 
 export const ExibirCriancas = () => {
   const navigation = useNavigation()
   const { user } = useUser()
-
   const [criancas, setCriancas] = useState([])
 
-  // Função para calcular idade a partir da data no formato "dd/mm/yyyy"
   const calculaIdade = (dataNasc) => {
     const [dia, mes, ano] = dataNasc.split('/')
     const nascimento = new Date(`${ano}-${mes}-${dia}`)
@@ -26,7 +23,6 @@ export const ExibirCriancas = () => {
     const mesNasc = nascimento.getMonth()
     const diaNasc = nascimento.getDate()
 
-    // Ajusta se ainda não fez aniversário no ano atual
     if (mesAtual < mesNasc || (mesAtual === mesNasc && diaAtual < diaNasc)) {
       idade--
     }
@@ -34,25 +30,19 @@ export const ExibirCriancas = () => {
     return idade
   }
 
-  // Busca crianças do responsável no Firestore
-  const fetchCriancas = async () => {
-    try {
-      const q = query(collection(db, 'criancas'), where('responsavelId', '==', user.uid))
-      const querySnapshot = await getDocs(q)
-
-      const lista = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-      setCriancas(lista)
-    } catch (error) {
-      Alert.alert('Erro', 'Não foi possível carregar as crianças.')
-      console.error(error)
-    }
-  }
-
   useEffect(() => {
-    fetchCriancas()
-  }, [])
+    async function carregarCriancas() {
+      try {
+        const lista = await fetchCriancasDoResponsavel(user.uid)
+        setCriancas(lista)
+      } catch (error) {
+        Alert.alert('Erro', 'Não foi possível carregar as crianças.')
+      }
+    }
 
-  // Renderiza cada criança na FlatList
+    carregarCriancas()
+  }, [user.uid])
+
   const renderItem = ({ item }) => (
     <Card>
       <TouchableOpacity
@@ -62,21 +52,18 @@ export const ExibirCriancas = () => {
         <Ionicons name="trash" size={20} color="red" />
       </TouchableOpacity>
 
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('EditChildren', { criancaId: item.id, dadosCrianca: item })}>
         {item.profileImageUrl ? (
           <Foto source={{ uri: item.profileImageUrl }} />
         ) : (
-          <View
-            style={{
-              width: 100,
-              height: 100,
-              borderRadius: 12,
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginBottom: 8,
-            }}
-          >
-          </View>
+          <View style={{
+            width: 100,
+            height: 100,
+            borderRadius: 12,
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginBottom: 8,
+          }} />
         )}
 
         <Title ft="25">{item.username}</Title>
@@ -87,30 +74,42 @@ export const ExibirCriancas = () => {
 
   return (
     <Container>
-      <Header bgColor="darkblue" title="Crianças" txtColor="text">Via Scholae</Header>
+      <Header
+        bgColor="darkblue"
+        title="Crianças"
+        txtColor="text"
+        iconName="chevron-back"
+        size={40}
+        color="white"
+      >Via Scholae</Header>
+
       <FlatList
         data={criancas}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         numColumns={2}
         columnWrapperStyle={{ justifyContent: 'space-between' }}
-        contentContainerStyle={{ paddingBottom: 20, paddingTop: 10 }}
+        contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
         ListEmptyComponent={
           <Text style={{ textAlign: 'center', marginTop: 20 }}>
             Nenhuma criança cadastrada.
           </Text>
         }
-      />
-      <Button
-        title="Adicionar"
-        color="white"
-        pd={15}
-        br={20}
-        width="65%"
-        height={45}
-        ft={16}
-        fw="bold"
-        onPress={() => navigation.navigate('RegisterCrianca')}
+        ListFooterComponent={
+          <View style={{ alignItems: 'center', marginTop: 20 }}>
+            <Button
+              title="Adicionar"
+              color="white"
+              pd={15}
+              br={20}
+              width="65%"
+              height={45}
+              ft={16}
+              fw="bold"
+              onPress={() => navigation.navigate('RegisterCrianca')}
+            />
+          </View>
+        }
       />
     </Container>
   )

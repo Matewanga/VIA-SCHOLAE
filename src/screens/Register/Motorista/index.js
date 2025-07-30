@@ -62,7 +62,7 @@ export const RegisterMotorista = () => {
       <Container contentContainerStyle={{ paddingBottom: 30 }}
         keyboardShouldPersistTaps="handled">
 
-        <Header bgColor="blue" txtColor="text" title="CADASTRO MOTORISTA">Via Scholae</Header>
+        <Header bgColor="blue" txtColor="text" color="white" size={40}>CADASTRO MOTORISTA</Header>
         <Title ft={35} mt={25} mb={1}>Faça seu Cadastro:</Title>
 
         <Form>

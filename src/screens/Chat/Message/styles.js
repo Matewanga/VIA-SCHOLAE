@@ -6,77 +6,68 @@ import { Ionicons } from '@expo/vector-icons'
 
 export const Container = styled.View`
   flex: 1;
-  background: ${(props) => props.theme.background};
-  position: relative;
+  background-color: white;
 `
 
-export const Header = styled.View`
-  background: ${(props) => props.theme.primary};
-  padding: ${theme.metrics.px(13)}px;
+export const HeaderContainer = styled.View`
   flex-direction: row;
-  width: ${theme.metrics.px(350)}px;
-  height: ${theme.metrics.px(65)}px;
-  border-radius: ${theme.metrics.px(40)}px;
-  position: absolute;
-  margin-left: ${theme.metrics.px(40)}px;
-  margin-top: ${theme.metrics.px(35)}px;
-  elevation: 5;
-  shadow-color: #262626;
-  shadow-offset: 1px 5px;
-  shadow-opacity: 1;
-  shadow-radius: 10px;
+  align-items: center;
+  height: 120px;
+  background-color: #0e194d;
+  padding: 10px 15px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
 `
 
-export const HeaderInfo = styled.View``
-
-export const Name = styled.Text`
-  font-size: ${theme.metrics.px(25)}px;
-  color: ${(props) => props.theme.text};
-  margin-left: ${theme.metrics.px(12)}px;
-  margin-top: ${theme.metrics.px(-4)}px;
-  margin-bottom: ${theme.metrics.px(1)}px;
+export const LeftBox = styled.View`
+  flex-direction: row;
+  align-items: center;
+  flex: 1;
 `
 
-export const SubTitles = styled.Text`
-  align-self: flex-start;
-  padding-left: ${theme.metrics.px(12)}px;
-  color: ${(props) => props.theme.textsecondary};
+export const BackButton = styled.TouchableOpacity`
+  padding: 5px;
 `
 
-export const styles = StyleSheet.create({
-  back: {
-    marginTop: 5,
-  },
-  pic: {
-    width: 50,
-    height: 50,
-    marginLeft: 20,
-    marginTop: -6,
-  },
-})
+export const UserAvatar = styled.Image`
+  width: 70px;
+  height: 70px;
+  border-radius: 100px;
+  margin-left: 10px;
+`
 
+export const UserName = styled.Text`
+  color: #fff;
+  font-size: 20px;
+  font-weight: 600;
+  margin-left: 10px;
+`
 export const renderCustomBubble = (props) => {
   return (
     <Bubble
       {...props}
       wrapperStyle={{
         right: {
-          backgroundColor: '#595959',
-          padding: 5,
+          backgroundColor: '#D9D9D9',
+          padding: 10,
           borderRadius: 20,
+          marginVertical: 2,
+          marginRight: 2,
         },
         left: {
-          backgroundColor: '#E4E6EB',
+          backgroundColor: '#F1F0F0',
           padding: 10,
-          borderRadius: 15,
+          borderRadius: 20,
+          marginVertical: 2,
+          marginLeft: 2,
         },
       }}
       textStyle={{
         right: {
-          color: '#EEEEEE',
+          color: '#000',
         },
         left: {
-          color: '#000000',
+          color: '#000',
         },
       }}
     />
@@ -90,24 +81,22 @@ export const renderCustomInputToolbar = (props) => {
       containerStyle={{
         backgroundColor: '#f4f4f4',
         borderTopWidth: 0,
-        borderRadius: 25,
+        borderRadius: 15,
         marginHorizontal: 10,
-        marginBottom: 10,
-        elevation: 5,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 5,
+        marginBottom: 20,
+        elevation: 3,
         paddingHorizontal: 15,
-        height: 49,
+        height: 55,
+        width: 330,
         justifyContent: 'center',
+        alignSelf: 'center',
       }}
       textInputStyle={{
         color: '#262626',
-        fontSize: 16, // Tamanho do texto
+        fontSize: 16,
         padding: 0,
         height: '100%',
-        textAlignVertical: 'center', // Para centralizar o texto verticalmente
+        textAlignVertical: 'center',
       }}
     />
   )
@@ -126,7 +115,7 @@ export const renderCustomSend = (props) => {
       <Ionicons
         name="send"
         size={24}
-        color="#E9B224"
+        color="#000000"
         style={{
           margin: 0,
           padding: 0,

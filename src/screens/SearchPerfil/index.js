@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { Text } from 'react-native'
 import {
-  ButtonChildren,
   ProfilePic,
-  BtnRotas,
   ButtonMessage,
-} from '../../../components'
+} from '../../components'
 import {
   Container,
   Header,
@@ -15,37 +13,19 @@ import {
   SubTitles,
   CloseButton,
   ButtonContainer,
+  UserAvatar,
   styles,
 } from './styles'
 import AntDesign from '@expo/vector-icons/AntDesign'
 import { useTheme } from 'styled-components/native'
 import { useNavigation } from '@react-navigation/native'
-import { useUser } from '../../../database'
-import { db } from '../../../config/firebase'
-import { doc, getDoc } from 'firebase/firestore'
+import { useUser } from '../../database'
 
 export const PerfilSearch = ({ route }) => {
   const { profile } = route.params
   const theme = useTheme()
   const navigation = useNavigation()
   const { user } = useUser()
-  const [vagas, setVagas] = useState(null)
-
-  useEffect(() => {
-    const fetchVagas = async () => {
-      try {
-        if (profile.type === 'motorista') {
-          const motoristaDoc = await getDoc(doc(db, 'motoristas', profile.id))
-          if (motoristaDoc.exists()) {
-            setVagas(motoristaDoc.data().vagas)
-          }
-        }
-      } catch (error) {
-        console.error('Erro ao buscar vagas: ', error)
-      }
-    }
-    fetchVagas()
-  }, [profile])
 
   return (
     <Container>
@@ -57,7 +37,7 @@ export const PerfilSearch = ({ route }) => {
 
       <ProfileContainer>
         <ConProfilePic>
-          <ProfilePic style={styles.img} />
+          <UserAvatar source={{ uri: profile.profileImageUrl }} resizeMode="cover" />
         </ConProfilePic>
 
         <ProfileName>{profile.username}</ProfileName>
@@ -68,20 +48,17 @@ export const PerfilSearch = ({ route }) => {
           <Text>{profile.phone}</Text>
         </SubTitles>
 
-        {profile.type === 'motorista' && (
-          <SubTitles>Vagas na van: {vagas ?? 'Carregando...'}</SubTitles>
-        )}
       </ProfileContainer>
 
       <ButtonContainer>
-        {profile.type === 'responsavel' && <ButtonChildren />}
+        {/* {profile.type === 'responsavel' && <ButtonChildren />}
         {profile.type === 'motorista' && (
           <BtnRotas
             onPress={() =>
               navigation.navigate('ExibirRota', { motoristaId: profile.id })
             }
           />
-        )}
+        )} */}
       </ButtonContainer>
 
       <ButtonMessage

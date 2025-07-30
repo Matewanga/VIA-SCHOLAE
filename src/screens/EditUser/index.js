@@ -14,7 +14,7 @@ import {
   ProfileImage,
 } from './styles'
 import { useUser } from '../../database'
-import { editUserPhoto, updateUserProfile } from './script'
+import { editUserPhoto, handleUpdateProfile } from './script'
 
 export const EditUser = () => {
   const { user, refreshUserData } = useUser()
@@ -31,6 +31,29 @@ export const EditUser = () => {
   const [placaVan, setPlacaVan] = useState('')
   const [escolas, setEscolas] = useState('')
 
+  const handleSave = async () => {
+    try {
+      await handleUpdateProfile(user, {
+        nome,
+        email,
+        telefone,
+        cep,
+        endereco,
+        rg,
+        cpf,
+        parentesco,
+        placaVan,
+        escolas
+      }, refreshUserData)
+
+      Alert.alert('Sucesso', 'Perfil atualizado com sucesso!')
+      navigation.goBack()
+    } catch (error) {
+      Alert.alert('Erro', 'Erro ao atualizar perfil.')
+      console.error(error)
+    }
+  }
+
   useEffect(() => {
     if (user) {
       setNome(user.username || '')
@@ -46,47 +69,6 @@ export const EditUser = () => {
     }
   }, [user])
 
-  const handleEditPhoto = async () => {
-    try {
-      const updated = await editUserPhoto(user, refreshUserData)
-      if (updated) {
-        Alert.alert('Sucesso', 'Foto atualizada com sucesso!')
-      }
-    } catch {
-      Alert.alert('Erro', 'Não foi possível atualizar a foto.')
-    }
-  }
-
-  const handleUpdateProfile = async () => {
-    try {
-      const isResponsavel = user.tipo === 'responsavel'
-
-      const dataToUpdate = {
-        username: nome,
-        email,
-        phone: telefone,
-        cep,
-        address: endereco,
-        RG: rg,
-        CPF: cpf,
-      }
-
-      if (isResponsavel) {
-        dataToUpdate.parentesco = parentesco
-      } else {
-        dataToUpdate.placaVan = placaVan
-        dataToUpdate.escolas = escolas
-      }
-
-      await updateUserProfile(user, dataToUpdate)
-      await refreshUserData()
-      Alert.alert('Sucesso', 'Perfil atualizado com sucesso!')
-      navigation.goBack()
-    } catch (error) {
-      console.error('Erro ao atualizar perfil:', error)
-      Alert.alert('Erro', 'Ocorreu um erro ao atualizar o perfil.')
-    }
-  }
 
   return (
     <KeyboardAvoidingView
@@ -100,13 +82,14 @@ export const EditUser = () => {
           color="black"
           logoSource={require('../../../assets/Logo_ViaScholae.png')}
           logoSize={50}
-          height="100"
+          height={100}
+          size={40}
         />
         <Title ft="40" txtColor="darkblue">Seu Perfil</Title>
 
         <ProfileImage source={{ uri: user.profileImageUrl }} />
 
-        <TouchableOpacity onPress={handleEditPhoto}>
+        <TouchableOpacity onPress={() => editUserPhoto(user, refreshUserData)}>
           <CustomText
             ft="20"
             txtColor="darkblue"
@@ -244,7 +227,7 @@ export const EditUser = () => {
           height={45}
           ft={16}
           fw="bold"
-          onPress={handleUpdateProfile}
+          onPress={handleSave}
         />
       </Container>
     </KeyboardAvoidingView>

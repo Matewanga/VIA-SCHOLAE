@@ -1,11 +1,10 @@
 import { StyleSheet } from 'react-native'
 import styled from 'styled-components'
-import { theme } from '../../styles'
+import { theme } from '../../../styles'
 
 export const Container = styled.View`
   flex: 1;
-  padding: ${theme.metrics.px(20)}px;
-  background: ${(props) => props.theme.background};
+  background-color: white;
 `
 
 export const SearchContainer = styled.View`

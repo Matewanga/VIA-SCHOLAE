@@ -43,6 +43,8 @@ export const Branding = styled.Text`
     txtColor && theme[txtColor] ? theme[txtColor] : '#262626'};
   font-size: 20px;
   font-weight: bold;
+  flex-direction: row;
+  align-items: center;
 `
 
 export const PageTitle = styled.Text`

@@ -9,6 +9,8 @@ export const LabelText = styled.Text`
     mb ? theme.metrics.px(mb) + 'px' : theme.metrics.px(20) + 'px'};
   margin-top: ${({ mt }) =>
     mt ? theme.metrics.px(mt) + 'px' : theme.metrics.px(0) + 'px'};
+  margin-left: ${({ ml }) =>
+    ml ? theme.metrics.px(ml) + 'px' : theme.metrics.px(0) + 'px'};
   font-weight: bold;
   color: ${({ theme, txtColor }) =>
     txtColor && theme[txtColor] ? theme[txtColor] : '#262626'};

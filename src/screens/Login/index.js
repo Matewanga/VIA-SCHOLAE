@@ -1,11 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { KeyboardAvoidingView, Platform } from 'react-native'
-import { collection, query, where, getDocs } from 'firebase/firestore'
-import { signInWithEmailAndPassword } from 'firebase/auth'
-import { auth } from '../../config/firebase'
-import { useUser } from '../../database'
-import { Alert } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
+import { useLogin } from './script'
 import { CustomLogo, CustomInput, Header, Button } from '../../components'
 import {
   Container,
@@ -17,28 +12,11 @@ import {
   LogoWrapper,
   RegisterOptions,
 } from './styles'
+import { useNavigation } from '@react-navigation/native'
 
 export const Login = () => {
+  const { email, setEmail, password, setPassword, handleSignIn } = useLogin()
   const navigation = useNavigation()
-  const { login } = useUser()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-
-  const handleSignIn = async () => {
-    if (email === '' || password === '') {
-      Alert.alert('Atenção!', 'Preencha todos os campos.')
-      return
-    }
-
-    try {
-      await signInWithEmailAndPassword(auth, email, password)
-      navigation.navigate('MainHome')
-      console.log('✅ Login realizado com sucesso')
-    } catch (error) {
-      console.error('Erro ao fazer login:', error)
-      Alert.alert('Erro', 'Email ou senha incorretos.')
-    }
-  }
 
   return (
     <KeyboardAvoidingView
@@ -47,7 +25,7 @@ export const Login = () => {
       keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
     >
       <Container keyboardShouldPersistTaps="handled">
-        <Header title="Login" txtColor="text" bgColor="blue">Via Scholae</Header>
+        <Header txtColor="text" bgColor="blue" color="white" size={40}>LOGIN</Header>
 
         <FormWrapper>
           <LogoWrapper>

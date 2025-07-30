@@ -1,18 +1,28 @@
 import React, { useState, useEffect } from 'react'
-import { KeyboardAvoidingView, Platform, Image, View, TouchableOpacity, Text } from 'react-native'
+import { KeyboardAvoidingView, Platform, Image, Text, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import { Header, Button, CustomInput, Title } from '../../../components'
+import { Header, Button, CustomInput, Title, CustomText } from '../../components'
 import { Container, Form, ButtonContainer, ImageWrapper } from './styles'
-import defaultProfile from '../../../../assets/default-user.jpg'
-import { useUser } from '../../../database'
+import defaultProfile from '../../../assets/default-user.jpg'
+import { useRoute } from '@react-navigation/native';
 
-import { fetchAddressByCep, formatCep, handleRegisterCriancas, pickImage, formatDateInput, isUnder18 } from './script'
+import {
+    fetchAddressByCep,
+    formatCep,
+    handleUpdateCriancas,
+    pickImage,
+    formatDateInput,
+    isUnder18
+} from './script'
 
-export const RegisterCrianca = () => {
+export const EditChildren = () => {
     const navigation = useNavigation()
-    const { user } = useUser()
+    const route = useRoute();
+    const { criancaId, dadosCrianca } = route.params;
+    const [formChanged, setFormChanged] = useState(false)
 
-    const [username, setUsername] = useState('')
+    const [usernameDisplay, setUsernameDisplay] = useState('')
+    const [usernameInput, setUsernameInput] = useState('')
     const [end, setEnd] = useState('')
     const [cep, setCep] = useState('')
     const [sexo, setSexo] = useState('')
@@ -22,9 +32,23 @@ export const RegisterCrianca = () => {
     const [turma, setTurma] = useState('')
     const [image, setImage] = useState(null)
 
+    useEffect(() => {
+        if (dadosCrianca) {
+            setUsernameInput(dadosCrianca.username || '')
+            setUsernameDisplay(dadosCrianca.username || '')
+            setEnd(dadosCrianca.address || '')
+            setCep(dadosCrianca.cep || '')
+            setSexo(dadosCrianca.sexo || '')
+            setDataNasc(dadosCrianca.dataNasc || '')
+            setEscola(dadosCrianca.escola || '')
+            setTurma(dadosCrianca.turma || '')
+            setImage(dadosCrianca.profileImageUrl || null)
+        }
+    }, [dadosCrianca])
+
     const isFormValid =
         image &&
-        username.trim().length > 0 &&
+        usernameInput.trim().length > 0 &&
         end.trim().length > 0 &&
         cep.trim().length > 0 &&
         sexo.trim().length > 0 &&
@@ -59,9 +83,15 @@ export const RegisterCrianca = () => {
             keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
         >
             <Container contentContainerStyle={{ paddingBottom: 30 }} keyboardShouldPersistTaps="handled">
-                <Header bgColor="blue" txtColor="text" title="CADASTRO CRIANÇA" color="white" size={40}>Via Scholae</Header>
-                <Title ft={35} mt={25} mb={1}>
-                    Faça o Cadastro:
+                <Header bgColor="white"
+                    logoSource={require('../../../assets/Logo_ViaScholae.png')}
+                    logoSize={50}
+                    height={100}
+                    iconName="chevron-back"
+                    size={40}
+                >Via Scholae</Header>
+                <Title ft={35} mt={25} mb={1} txtColor="darkblue">
+                    {usernameDisplay}
                 </Title>
 
                 <Form>
@@ -72,24 +102,22 @@ export const RegisterCrianca = () => {
                             resizeMode="cover"
                         />
                     </ImageWrapper>
-                    <ButtonContainer style={{ marginBottom: 20 }}>
-                        <Button
-                            title={image ? 'Alterar foto' : 'Escolher foto'}
-                            color="white"
-                            pd={15}
-                            br={20}
-                            width="60%"
-                            height={45}
-                            ft={16}
-                            fw="bold"
-                            onPress={() => pickImage(setImage)}
-                        />
-                    </ButtonContainer>
+                    <TouchableOpacity onPress={() => pickImage(setImage)}>
+                        <CustomText
+                            ft="20"
+                            txtColor="darkblue"
+                            mt="10"
+                            mb="20"
+                            style={{ textAlign: 'center' }}
+                        >
+                            Editar foto
+                        </CustomText>
+                    </TouchableOpacity>
 
                     <CustomInput
                         placeholder="Nome"
-                        onChangeText={setUsername}
-                        value={username}
+                        onChangeText={setUsernameInput}
+                        value={usernameInput}
                         maxLength={30}
                         height={50}
                         width={330}
@@ -174,7 +202,7 @@ export const RegisterCrianca = () => {
 
                 <ButtonContainer>
                     <Button
-                        title="Cadastrar"
+                        title="Atualizar"
                         color="white"
                         pd={15}
                         br={20}
@@ -182,11 +210,12 @@ export const RegisterCrianca = () => {
                         height={45}
                         ft={16}
                         fw="bold"
-                        onPress={() =>
-                            handleRegisterCriancas({
-                                userId: user.uid,
+                        onPress={() => {
+                            if (!isFormValid) return
+                            handleUpdateCriancas({
+                                criancaId,
                                 image,
-                                username,
+                                username: usernameInput,
                                 end,
                                 cep,
                                 sexo,
@@ -195,7 +224,7 @@ export const RegisterCrianca = () => {
                                 turma,
                                 navigation,
                             })
-                        }
+                        }}
                         bg={isFormValid ? '#ffd740' : '#999999'}
                         disabled={!isFormValid}
                     />
