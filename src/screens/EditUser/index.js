@@ -78,8 +78,8 @@ export const EditUser = () => {
     >
       <Container contentContainerStyle={{ paddingBottom: 50 }} keyboardShouldPersistTaps="handled">
         <Header
-          bgColor="white"
-          color="black"
+          bgColor="background"
+          color="text"
           logoSource={require('../../../assets/Logo_ViaScholae.png')}
           logoSize={50}
           height={100}
@@ -101,7 +101,7 @@ export const EditUser = () => {
           </CustomText>
         </TouchableOpacity>
 
-        <CustomText ft="30" mt="20" mb="3">Ficha cadastral</CustomText>
+        <CustomText ft="30" mt="20" mb="3" txtColor="text">Ficha cadastral</CustomText>
 
         <Form>
           <CustomInput
@@ -220,12 +220,12 @@ export const EditUser = () => {
 
         <Button
           title="Salvar"
-          color="white"
+          txtColor="text"
           pd={15}
           br={20}
           width="50%"
-          height={45}
-          ft={16}
+          height={50}
+          ft={18}
           fw="bold"
           onPress={handleSave}
         />

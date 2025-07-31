@@ -42,10 +42,10 @@ export const Search = () => {
             <UserCardContent>
                 <UserAvatar source={{ uri: item.profileImageUrl }} resizeMode="cover" />
                 <UserCardTextContainer>
-                    <CustomText ft={23} txtColor="black">
+                    <CustomText ft={23} txtColor="text">
                         {item.username}
                     </CustomText>
-                    <CustomText ft={18} txtColor="secondary">
+                    <CustomText ft={18} txtColor="textSecond">
                         {item.phone}
                     </CustomText>
                 </UserCardTextContainer>
@@ -57,7 +57,7 @@ export const Search = () => {
         <Container>
             <Header
                 bgColor="darkblue"
-                txtColor="text"
+                txtColor="white"
                 iconName="chevron-back"
                 color="white"
                 size={40}

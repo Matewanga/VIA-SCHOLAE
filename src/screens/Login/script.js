@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { Alert } from 'react-native'
-import { signInWithEmailAndPassword } from 'firebase/auth'
-import { auth } from '../../config/firebase'
 import { useNavigation } from '@react-navigation/native'
+import { useUser } from '../../database'
 
 export const useLogin = () => {
   const navigation = useNavigation()
+  const { login } = useUser()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
@@ -16,11 +16,14 @@ export const useLogin = () => {
     }
 
     try {
-      await signInWithEmailAndPassword(auth, email, password)
-      navigation.navigate('MainHome')
+      await login(email, password)
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'MainHome' }],
+      })
     } catch (error) {
       console.error('Erro ao fazer login:', error)
-      Alert.alert('Erro', 'Email ou senha incorretos.')
+      Alert.alert('Erro', error.message || 'Email ou senha incorretos.')
     }
   }
 

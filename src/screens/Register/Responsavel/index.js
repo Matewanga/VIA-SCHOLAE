@@ -47,7 +47,7 @@ export const Register = () => {
       keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
     >
       <Container contentContainerStyle={{ paddingBottom: 30 }} keyboardShouldPersistTaps="handled">
-        <Header bgColor="blue" txtColor="text" size={40} color="white">CADASTRO RESPONSÁVEL</Header>
+        <Header bgColor="blue" txtColor="white" size={40} color="white">CADASTRO RESPONSÁVEL</Header>
         <Title ft={35} mt={25} mb={1}>
           Faça seu Cadastro:
         </Title>
@@ -63,7 +63,7 @@ export const Register = () => {
           <ButtonContainer style={{ marginBottom: 20 }}>
             <Button
               title={image ? 'Alterar foto' : 'Escolher foto'}
-              color="white"
+              txtColor="text"
               pd={15}
               br={20}
               width="60%"
@@ -189,7 +189,7 @@ export const Register = () => {
           />
         </Form>
 
-        <CustomText ft={20} mt={10} mb={20} txtColor="black">
+        <CustomText ft={20} mt={10} mb={20} txtColor="text">
           Já possui cadastro?{' '}
           <CustomText
             ft={20}
@@ -204,7 +204,7 @@ export const Register = () => {
         <ButtonContainer>
           <Button
             title="Cadastrar"
-            color="white"
+            txtColor="text"
             pd={15}
             br={20}
             width="65%"

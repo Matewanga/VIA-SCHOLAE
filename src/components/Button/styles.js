@@ -25,7 +25,7 @@ export const EnterButton = styled.TouchableOpacity`
 
 
 export const EnterButtonText = styled.Text`
-  color: ${({ color }) => color || '#FFFFFF'};
+  color: ${({ txtColor }) => txtColor || '#FFFFFF'};
   font-size: ${({ ft }) =>
     ft ? theme.metrics.px(ft) + 'px' : theme.metrics.px(18) + 'px'};
   font-weight: ${({ fw }) => fw || 'bold'};

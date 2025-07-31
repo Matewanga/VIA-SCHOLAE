@@ -1,9 +1,11 @@
 import React from 'react'
 import { EnterButton, EnterButtonText } from './styles'
+import { View } from 'react-native'
 
 export const Button = ({
   onPress,
   title,
+  icon,
   bg,
   pd,
   br,
@@ -12,7 +14,7 @@ export const Button = ({
   height,
   mr,
   ml,
-  color,
+  txtColor,
   ft,
   fw,
 }) => {
@@ -28,9 +30,12 @@ export const Button = ({
       mr={mr}
       ml={ml}
     >
-      <EnterButtonText color={color} ft={ft} fw={fw}>
-        {title}
-      </EnterButtonText>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+        {icon && <View style={{ marginRight: 8 }}>{icon}</View>}
+        <EnterButtonText txtColor={txtColor} ft={ft} fw={fw}>
+          {title}
+        </EnterButtonText>
+      </View>
     </EnterButton>
   )
 }

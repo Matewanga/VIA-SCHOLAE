@@ -62,7 +62,7 @@ export const RegisterMotorista = () => {
       <Container contentContainerStyle={{ paddingBottom: 30 }}
         keyboardShouldPersistTaps="handled">
 
-        <Header bgColor="blue" txtColor="text" color="white" size={40}>CADASTRO MOTORISTA</Header>
+        <Header bgColor="blue" txtColor="white" color="white" size={40}>CADASTRO MOTORISTA</Header>
         <Title ft={35} mt={25} mb={1}>Faça seu Cadastro:</Title>
 
         <Form>
@@ -76,7 +76,7 @@ export const RegisterMotorista = () => {
           <ButtonContainer style={{ marginBottom: 20 }}>
             <Button
               title={image ? "Alterar foto" : "Escolher foto"}
-              color="white"
+              txtColor="text"
               pd={15}
               br={20}
               width="60%"
@@ -190,8 +190,8 @@ export const RegisterMotorista = () => {
           />
 
           {/* Campo para imagem da CNH */}
-          <CustomText ft={23} mt={10} mb={20} txtColor="black">Insira uma foto frente e verso da CNH</CustomText>
-          <Button title="Selecionar Frente CNH" width="70%" onPress={() => pickImage(setCnhFrente)} />
+          <CustomText ft={23} mt={10} mb={20} txtColor="text">Insira uma foto frente e verso da CNH</CustomText>
+          <Button title="Selecionar Frente CNH" width="70%" txtColor="text" onPress={() => pickImage(setCnhFrente)} />
           {cnhFrente && (
             <ImgContainer>
               <ImagePreview source={{ uri: cnhFrente }} resizeMode="cover" />
@@ -220,7 +220,7 @@ export const RegisterMotorista = () => {
             </ImgContainer>
           )}
 
-          <Button title="Selecionar Verso CNH" width="70%" onPress={() => pickImage(setCnhVerso)} />
+          <Button title="Selecionar Verso CNH" width="70%" txtColor="text" onPress={() => pickImage(setCnhVerso)} />
           {cnhVerso && (
             <ImgContainer>
               <ImagePreview source={{ uri: cnhVerso }} resizeMode="cover" />
@@ -249,8 +249,8 @@ export const RegisterMotorista = () => {
             </ImgContainer>
           )}
 
-          <CustomText ft={20} mt={10} mb={20} txtColor="black">
-            Ja possui cadastro?{' '}
+          <CustomText ft={20} mt={10} mb={20} txtColor="text">
+            Ja possúi cadastro?{' '}
             <CustomText
               ft={20}
               txtColor="cyan"
@@ -264,7 +264,7 @@ export const RegisterMotorista = () => {
           <ButtonContainer>
             <Button
               title="Continuar"
-              color="white"
+              txtColor="text"
               pd={15}
               br={20}
               width="48%"

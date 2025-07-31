@@ -66,8 +66,8 @@ export const ExibirCriancas = () => {
           }} />
         )}
 
-        <Title ft="25">{item.username}</Title>
-        <CustomText ft="18" mt="-20" txtColor="secondary">{calculaIdade(item.dataNasc)} anos</CustomText>
+        <Title ft="25" txtColor="text">{item.username}</Title>
+        <CustomText ft="18" mt="-20" txtColor="textsecondary">{calculaIdade(item.dataNasc)} anos</CustomText>
       </TouchableOpacity>
     </Card>
   )
@@ -76,12 +76,11 @@ export const ExibirCriancas = () => {
     <Container>
       <Header
         bgColor="darkblue"
-        title="Crianças"
-        txtColor="text"
+        txtColor="white"
         iconName="chevron-back"
         size={40}
         color="white"
-      >Via Scholae</Header>
+      >Crianças</Header>
 
       <FlatList
         data={criancas}
@@ -99,7 +98,7 @@ export const ExibirCriancas = () => {
           <View style={{ alignItems: 'center', marginTop: 20 }}>
             <Button
               title="Adicionar"
-              color="white"
+              txtColor="text"
               pd={15}
               br={20}
               width="65%"

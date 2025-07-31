@@ -1,7 +1,7 @@
 import React from 'react'
 import { KeyboardAvoidingView, Platform } from 'react-native'
 import { useLogin } from './script'
-import { CustomLogo, CustomInput, Header, Button } from '../../components'
+import { CustomLogo, CustomInput, Header, Button, CustomText } from '../../components'
 import {
   Container,
   FormWrapper,
@@ -25,7 +25,7 @@ export const Login = () => {
       keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
     >
       <Container keyboardShouldPersistTaps="handled">
-        <Header txtColor="text" bgColor="blue" color="white" size={40}>LOGIN</Header>
+        <Header txtColor="white" bgColor="blue" color="white" size={40}>LOGIN</Header>
 
         <FormWrapper>
           <LogoWrapper>
@@ -53,18 +53,12 @@ export const Login = () => {
 
             <RegisterOptions>
               <RegisterOption>
-                <RegisterText>É motorista e não possui cadastro?</RegisterText>
-                <RegisterLink
-                  onPress={() => navigation.navigate('RegisterMotorista')}
-                >
-                  Cadastre-se Aqui!
-                </RegisterLink>
+                <CustomText ft={20} txtColor="text" mb={1}>É motorista e não possui cadastro?</CustomText>
+                <CustomText ft={18} txtColor="cyan" mb={1} onPress={() => navigation.navigate('RegisterMotorista')}>Cadastre-se Aqui!</CustomText>
               </RegisterOption>
               <RegisterOption>
-                <RegisterText>É Responsável e não possui cadastro?</RegisterText>
-                <RegisterLink onPress={() => navigation.navigate('Register')}>
-                  Cadastre-se Aqui!
-                </RegisterLink>
+                <CustomText ft={20} txtColor="text" mb={1}>É Responsável e não possui cadastro?</CustomText>
+                <CustomText ft={18} txtColor="cyan" mb={1} onPress={() => navigation.navigate('Register')}>Cadastre-se Aqui!</CustomText>
               </RegisterOption>
             </RegisterOptions>
 

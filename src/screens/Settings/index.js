@@ -4,56 +4,75 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import {
     Header,
     CustomText,
-    ButtonYourAccount,
-    ButtonAccessibility,
+    Button,
 } from '../../components'
 import {
     Container,
-    BtnProfile,
+    Profile,
     UserAvatar,
     ProfileInfo,
-    ProfileName,
-    ProfilePhone,
-    ProfileEmail,
-    BtnYourAccount,
-    IconAcContainer,
-    TextAcContainer,
-    OptionTextAc,
+    Account,
+    Icon,
 } from './styles'
 import { useUser } from '../../database'
 import { Ionicons } from '@expo/vector-icons'
 
 export const Settings = () => {
     const navigation = useNavigation()
-    const { logout, user } = useUser()
+    const { user } = useUser()
+
+    const handleLogout = async () => {
+        try {
+            // Remove dados salvos, se houver
+            await AsyncStorage.clear()
+
+            // Redireciona para tela de login e limpa o histórico de navegação
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'Login' }],
+            })
+        } catch (error) {
+            console.log('Erro ao sair da conta:', error)
+        }
+    }
 
     return (
         <Container>
-            <Header bgColor="darkblue" txtColor="text" color="white" size={40}>Configurações</Header>
-            <BtnProfile onPress={() => navigation.navigate('EditProfile')}>
+            <Header bgColor="darkblue" txtColor="white" color="white" size={40}>Configurações</Header>
+
+            <Profile onPress={() => navigation.navigate('EditUser')}>
                 <UserAvatar source={{ uri: user.profileImageUrl }} resizeMode="cover" />
                 <ProfileInfo>
-                    <ProfileName>{user ? user.username : 'Nome não disponível'}</ProfileName>
-                    <ProfilePhone>{user ? user.phone : 'Número não disponível'}</ProfilePhone>
-                    <ProfileEmail>{user ? user.email : 'Email não disponível'}</ProfileEmail>
+                    <CustomText ft={20} txtColor="white">{user.username}</CustomText>
+                    <CustomText ft={18} txtColor="white">{user.phone}</CustomText>
+                    <CustomText ft={18} txtColor="white">{user.email}</CustomText>
                 </ProfileInfo>
-            </BtnProfile>
+            </Profile>
 
-            <CustomText txtColor="text" ft={25}>Configurações do APP</CustomText>
+            <CustomText txtColor="black" ft={25}>Configurações do APP</CustomText>
 
-
-            <BtnYourAccount onPress={() => navigation.navigate('YourAccount')}>
-                <IconAcContainer>
+            <Account>
+                <Icon>
                     <Ionicons name="person-outline" size={50} />
-                    <TextAcContainer>
-                        <OptionTextAc>Conta</OptionTextAc>
-                    </TextAcContainer>
-                </IconAcContainer>
-            </BtnYourAccount>
+                    <CustomText ft={20} txtColor="text">Conta</CustomText>
+                </Icon>
+            </Account>
+            <Account>
+                <Icon>
+                    <Ionicons name="accessibility-outline" size={50} />
+                    <CustomText ft={20} txtColor="text">Acessibilidade</CustomText>
+                </Icon>
+            </Account>
 
-            <ButtonAccessibility />
-
-
+            <Button
+                title="Sair da Conta"
+                width={200}
+                height={45}
+                ft={23}
+                pd={0}
+                txtColor="text"
+                onPress={handleLogout}
+            />
         </Container>
     )
 }

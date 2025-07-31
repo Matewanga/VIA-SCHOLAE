@@ -15,7 +15,7 @@ SplashScreen.preventAutoHideAsync()
 
 export default function App() {
   const deviceTheme = useColorScheme()
-  const themes = theme[deviceTheme === 'light' ? 'light' : 'dark']
+  const themes = theme['light']
   const [appIsReady, setAppIsReady] = useState(false)
   const [fontsLoaded] = useFonts({
     SourceSansPro_400Regular,

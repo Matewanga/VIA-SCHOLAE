@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, useContext, useState, useEffect } from 'react'
 import { doc, getDoc } from 'firebase/firestore'
 import { auth, db } from '../config/firebase'
 import {
@@ -7,11 +7,9 @@ import {
   signInWithEmailAndPassword,
 } from 'firebase/auth'
 
-// Cria um contexto para o usuário
+// Cria o contexto
 const UserContext = createContext(null)
 
-
-// Provedor de contexto para gerenciar o estado do usuário
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -33,29 +31,23 @@ export const UserProvider = ({ children }) => {
     }
   }
 
-
-  // Função para autenticar o usuário no Firebase
   const login = async (email, password) => {
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      )
+      const userCredential = await signInWithEmailAndPassword(auth, email, password)
       const user = userCredential.user
 
-      // Tenta buscar primeiro em "responsaveis"
       const docResp = await getDoc(doc(db, 'responsaveis', user.uid))
       if (docResp.exists()) {
-        setUser({ uid: user.uid, tipo: 'responsavel', ...docResp.data() })
-        return
+        const data = { uid: user.uid, tipo: 'responsavel', ...docResp.data() }
+        setUser(data)
+        return data
       }
 
-      // Se não encontrou, tenta em "motoristas"
       const docMotorista = await getDoc(doc(db, 'motoristas', user.uid))
       if (docMotorista.exists()) {
-        setUser({ uid: user.uid, tipo: 'motorista', ...docMotorista.data() })
-        return
+        const data = { uid: user.uid, tipo: 'motorista', ...docMotorista.data() }
+        setUser(data)
+        return data
       }
 
       throw new Error('Usuário autenticado mas não encontrado no Firestore.')
@@ -65,7 +57,6 @@ export const UserProvider = ({ children }) => {
     }
   }
 
-  // Função para deslogar o usuário
   const logout = async () => {
     try {
       await signOut(auth)
@@ -75,37 +66,24 @@ export const UserProvider = ({ children }) => {
     }
   }
 
-  // Monitorando o estado de autenticação para persistir o login
-  React.useEffect(() => {
+  useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
-        // Tenta buscar em ambas as coleções
         const docResp = await getDoc(doc(db, 'responsaveis', currentUser.uid))
         if (docResp.exists()) {
-          setUser({
-            uid: currentUser.uid,
-            tipo: 'responsavel',
-            ...docResp.data(),
-          })
+          setUser({ uid: currentUser.uid, tipo: 'responsavel', ...docResp.data() })
           setLoading(false)
           return
         }
 
-        const docMotorista = await getDoc(
-          doc(db, 'motoristas', currentUser.uid)
-        )
+        const docMotorista = await getDoc(doc(db, 'motoristas', currentUser.uid))
         if (docMotorista.exists()) {
-          setUser({
-            uid: currentUser.uid,
-            tipo: 'motorista',
-            ...docMotorista.data(),
-          })
+          setUser({ uid: currentUser.uid, tipo: 'motorista', ...docMotorista.data() })
           setLoading(false)
           return
         }
 
-        // Se não encontrou o usuário nas coleções
-        setUser(currentUser)
+        setUser(null)
       } else {
         setUser(null)
       }
@@ -122,7 +100,6 @@ export const UserProvider = ({ children }) => {
   )
 }
 
-// Hook personalizado para acessar os dados do usuário em outros componentes
 export const useUser = () => {
   return useContext(UserContext)
 }

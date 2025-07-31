@@ -59,8 +59,8 @@ export const RegisterCrianca = () => {
             keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
         >
             <Container contentContainerStyle={{ paddingBottom: 30 }} keyboardShouldPersistTaps="handled">
-                <Header bgColor="blue" txtColor="text" title="CADASTRO CRIANÇA" color="white" size={40}>Via Scholae</Header>
-                <Title ft={35} mt={25} mb={1}>
+                <Header bgColor="blue" txtColor="white" color="white" size={40}>CADASTRO CRIANÇA</Header>
+                <Title ft={35} mt={25} mb={1} txtColor="text">
                     Faça o Cadastro:
                 </Title>
 
@@ -75,7 +75,7 @@ export const RegisterCrianca = () => {
                     <ButtonContainer style={{ marginBottom: 20 }}>
                         <Button
                             title={image ? 'Alterar foto' : 'Escolher foto'}
-                            color="white"
+                            txtColor="text"
                             pd={15}
                             br={20}
                             width="60%"
@@ -175,7 +175,7 @@ export const RegisterCrianca = () => {
                 <ButtonContainer>
                     <Button
                         title="Cadastrar"
-                        color="white"
+                        txtColor={isFormValid ? '#262626' : '#FFFFFF'}
                         pd={15}
                         br={20}
                         width="65%"
