@@ -7,24 +7,18 @@ import {
   Initial,
   Login,
   Account,
-  EditProfile,
-  EditEmail,
-  EditName,
-  EditPhone,
-  EditEnd,
   EditChildren,
   Home,
   Message,
   Chat,
   Register,
+  RegisterRoute,
   TermosdeUso,
   Search,
   Settings,
   Accessibility,
   Language,
   Theme,
-  YourAccount,
-  UpdatePassword,
   RegisterMotorista,
   RegisterCrianca,
   ExibirCriancas,
@@ -204,8 +198,8 @@ export const Routes = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="RegistroRota"
-        component={RegistroRota}
+        name="RegisterRoute"
+        component={RegisterRoute}
         options={{ headerShown: false }}
       />
       <Stack.Screen

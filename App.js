@@ -10,6 +10,10 @@ import { NavigationContainer } from '@react-navigation/native'
 import { Routes } from './src/routes'
 import { ThemeProvider } from 'styled-components'
 import { theme } from './src/styles'
+import MapboxGL from '@rnmapbox/maps'
+import { MAPBOXTOKEN } from '@env'
+
+MapboxGL.setAccessToken(MAPBOXTOKEN)
 
 SplashScreen.preventAutoHideAsync()
 

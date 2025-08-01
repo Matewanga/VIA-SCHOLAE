@@ -36,7 +36,7 @@
       [
         "@rnmapbox/maps",
         {
-          "RNMapboxMapsDownloadToken": "sk.eyJ1IjoiY29vaW5nbXRjZG9hIiwiYSI6ImNtMmM4ejl3NDBxbW4ycm9uN3JlamtqbncifQ.hpltrhlR36OOJoDENW2YyQ"
+          "RNMapboxMapsDownloadToken": "pk.eyJ1IjoiY29vaW5nbXRjZG9hIiwiYSI6ImNtZHMxYTdmNDBveHAyaXBwNmk0cGRtbDUifQ.mzr4-ccJpyUD5cH08FtGbQ"
         }
       ],
       [
@@ -61,7 +61,8 @@
       "eas": {
         "projectId": "3104ffe1-1099-4a6d-bb6a-28084d31d432"
       },
-      "SECRET_KEY": "a2b3c4d5e6f7g8h9i0jklmnopqrstuv"
+      "SECRET_KEY": "a2b3c4d5e6f7g8h9i0jklmnopqrstuv",
+      "MAPBOXTOKEN": "pk.eyJ1IjoiY29vaW5nbXRjZG9hIiwiYSI6ImNtZHMxYTdmNDBveHAyaXBwNmk0cGRtbDUifQ.mzr4-ccJpyUD5cH08FtGbQ"
     }
   }
 }

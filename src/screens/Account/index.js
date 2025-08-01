@@ -77,7 +77,7 @@ export const Account = () => {
                                 height={70}
                                 ft={20}
                                 fw="bold"
-                                onPress={() => navigation.navigate('ExibirCriancas')}
+                                onPress={() => navigation.navigate('RegisterRoute', { motoristaId: user.uid })}
                                 icon={<Ionicons name="map" size={35} color="text" />}
                             />
                             <Button
@@ -89,8 +89,20 @@ export const Account = () => {
                                 height={70}
                                 ft={20}
                                 fw="bold"
-                                onPress={() => navigation.navigate('ExibirCriancas')}
+                                // onPress={() => navigation.navigate('ExibirCriancas')}
                                 icon={<Ionicons name="briefcase" size={24} color="text" />}
+                            />
+                            <Button
+                                title="Monitores"
+                                txtColor="text"
+                                pd={15}
+                                br={20}
+                                width="65%"
+                                height={70}
+                                ft={20}
+                                fw="bold"
+                                // onPress={() => navigation.navigate('ExibirCriancas')}
+                                icon={<Ionicons name="person" size={24} color="text" />}
                             />
                         </>
                     )}
