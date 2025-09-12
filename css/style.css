@@ -553,9 +553,6 @@ body {
   width: 100%;
   min-height: 100vh; /* ocupa a tela toda */
   box-sizing: border-box;
-  display: flex; /* centraliza conteúdo */
-  justify-content: center;
-  align-items: center;
 }
 
 /* animação do gradiente */
@@ -564,6 +561,7 @@ body {
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
+
 /* Bolinhas decorativas brancas animadas */
 .about .circle1,
 .about .circle2,
