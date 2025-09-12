@@ -721,6 +721,7 @@ body {
   .deco-title {
     font-size: 3.5rem;
     margin: 2rem auto;
+    margin-top: 1rem;  /* <<< diminui a distância do topo */
     text-align: center;
     width: 100%;
     display: block;
@@ -738,13 +739,13 @@ body {
   .about .box-container .image {
     flex: 0 0 90%;
     text-align: center;
-    margin-top: 2rem; /* empurra a imagem para baixo do título */
+    margin-top: 4rem; /* empurra a imagem para baixo do título */
   }
 
   .about .content {
     flex: 0 0 90%;
     text-align: center;
-    margin-top: 2rem; /* empurra o texto abaixo da imagem */
+    margin-top: 4rem; /* empurra o texto abaixo da imagem */
     max-width: none;
     min-width: auto;
   }
