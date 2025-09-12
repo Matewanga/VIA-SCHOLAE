@@ -758,7 +758,7 @@ body {
   .about .content p {
     min-width: auto;
     max-width: 100%;
-    position: center;
+    text-align: center;
   }
 }
 
