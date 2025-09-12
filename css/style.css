@@ -544,6 +544,7 @@ body {
 
 /* Fundo com gradiente animado */
 .about {
+  min-height: 100vh; /* ocupa 100% da altura da tela */
   position: relative;
   background: linear-gradient(135deg, #ffb347, #ff944d, #ff7a00, #ff6e01);
   background-size: 400% 400%;
