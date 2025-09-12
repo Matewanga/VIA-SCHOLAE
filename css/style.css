@@ -720,17 +720,19 @@ body {
   /* Centraliza título e força a exibição */
   .deco-title {
     font-size: 3.5rem;
-    margin-left: 0;
+    margin: 2rem auto; /* centraliza com espaçamento */
     text-align: center;
     width: 100%;
     display: block;
-    order: -1; /* faz o título aparecer acima da box-container */
-    margin-bottom: 2rem;
+    position: relative;
+    top: 0; /* garante que fica acima */
+    z-index: 2; /* sobrepõe imagem */
   }
 
   .about .box-container {
     flex-direction: column;
     align-items: center;
+    margin-top: 2rem; /* empurra imagem para baixo do título */
   }
 
   .about .box-container .image,
@@ -751,6 +753,7 @@ body {
     max-width: 100%;
   }
 }
+
 
 /* end */
 
