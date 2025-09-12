@@ -720,26 +720,31 @@ body {
   /* Centraliza título e força a exibição */
   .deco-title {
     font-size: 3.5rem;
-    margin: 2rem auto; /* centraliza com espaçamento */
+    margin: 2rem auto;
     text-align: center;
     width: 100%;
     display: block;
     position: relative;
-    top: 0; /* garante que fica acima */
-    z-index: 2; /* sobrepõe imagem */
+    top: 0;
+    z-index: 2;
   }
 
   .about .box-container {
     flex-direction: column;
     align-items: center;
-    margin-top: 2rem; /* empurra imagem para baixo do título */
+    margin-top: 4rem; /* garante espaço depois do título */
   }
 
-  .about .box-container .image,
+  .about .box-container .image {
+    flex: 0 0 90%;
+    text-align: center;
+    margin-top: 2rem; /* empurra a imagem para baixo do título */
+  }
+
   .about .content {
     flex: 0 0 90%;
     text-align: center;
-    margin-left: 0;
+    margin-top: 2rem; /* empurra o texto abaixo da imagem */
     max-width: none;
     min-width: auto;
   }
@@ -753,6 +758,7 @@ body {
     max-width: 100%;
   }
 }
+
 
 
 /* end */
