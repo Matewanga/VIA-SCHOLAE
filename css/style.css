@@ -306,39 +306,41 @@ body {
 
 /* home */
 .home {
-  position: relative; /* ADICIONADO para posicionar .wave corretamente */
-  overflow: hidden; /* ADICIONADO para evitar que a imagem wave “vaze” */
+  position: relative; /* posiciona a wave corretamente */
+  overflow: hidden; /* evita que a imagem wave “vaze” */
   min-height: 100vh;
   display: flex;
   align-items: center;
+  justify-content: center; /* centraliza o conteúdo no desktop */
 
   /* Escurece a imagem com um gradiente preto semi-transparente */
   background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
-              url(../images/banner4.jpg) no-repeat;
+              url('images/banner4.jpg') no-repeat center center;
   background-size: cover;
-  background-position: top;
 }
 
 .home .content {
   max-width: 60rem;
   padding: 0 2rem;
+  text-align: center; /* centraliza texto */
+}
+
+.home .content h3,
+.home .content h2 {
+  margin: 0;
+  font-weight: 500;
+  line-height: 1.4;
+  text-transform: none;
 }
 
 .home .content h3 {
   color: var(--white);
   font-size: 5rem;
-  line-height: 1.4;
-  font-weight: 500;
-  text-transform: none;
-  margin-left: -20px; /* puxa 20px para a esquerda */
 }
 
 .home .content h2 {
   color: var(--main);
   font-size: 5rem;
-  line-height: 1.4;
-  font-weight: 500;
-  margin-left: -20px; /* puxa 20px para a esquerda */
 }
 
 .home .wave {
@@ -346,29 +348,27 @@ body {
   bottom: 0;
   left: 0;
   width: 100%;
-  height: auto;         /* deixa a altura se ajustar automaticamente */
-  max-height: 12rem;    /* limite máximo */
+  height: auto;      /* altura ajusta automaticamente */
+  max-height: 12rem; /* limite máximo */
   object-fit: cover;
 }
 
-
-/* Responsividade */
+/* Responsividade tablets */
 @media (max-width: 768px) {
   .home .content h3,
   .home .content h2 {
-        background-position: center; /* centraliza no mobile */
     font-size: 3.5rem;
   }
 }
 
+/* Responsividade mobile */
 @media (max-width: 480px) {
   .home {
-    min-height: 100vh;  /* ocupa a altura total da tela */
+    min-height: 100vh;
     background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
-                url(../images/bannercell.jpeg) no-repeat center center;
-    background-size: cover; /* cobre todo o espaço */
+                url('images/bannercell.jpeg') no-repeat center center;
+    background-size: cover;
   }
-
 
   .home .content h3,
   .home .content h2 {
@@ -378,10 +378,7 @@ body {
   .home .wave {
     height: 8rem;
   }
-  
 }
-
-/* end */
 
 /* via Scholae Section */
 /* via Scholae Section */
@@ -1333,6 +1330,7 @@ section {
 
 /* Aplica Montserrat em todo o site */
 
+  /* galeria */
 .gallery {
   position: relative;
   padding: 80px 9%;
@@ -1357,7 +1355,7 @@ section {
 
 .gallery-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* corrige desktop */
   gap: 25px;
   z-index: 2;
   position: relative;
@@ -1365,17 +1363,18 @@ section {
 
 .gallery-container img {
   width: 100%;
-  height: 220px;
+  height: auto;           /* permite altura flexível no desktop */
+  aspect-ratio: 4 / 3;    /* mantém proporção agradável no desktop */
   object-fit: cover;
   border-radius: 16px;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.15);
   transition: transform 0.4s ease, box-shadow 0.4s ease;
-  cursor: pointer; /* indica que pode clicar */
+  cursor: pointer;
 }
 
 .gallery-container img:hover {
   transform: scale(1.07) rotate(-1deg);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.25);
 }
 
 /* Elementos decorativos no fundo */
@@ -1407,9 +1406,17 @@ section {
   .gallery-container {
     grid-template-columns: repeat(2, 1fr);
   }
+
   .gallery-container img {
-    height: auto; /* remove altura fixa */
-    aspect-ratio: 1 / 1; /* força proporção quadrada */
+    height: auto; 
+    aspect-ratio: 1 / 1; /* força proporção quadrada no mobile */
     object-fit: cover;
   }
 }
+
+@media (max-width: 480px) {
+  .gallery-container {
+    grid-template-columns: 1fr;
+  }
+}
+
