@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap');
+pq o css da visualização em computador n esta funcionando: @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap');
 
 :root {
   --main: #ff6e01;
@@ -305,7 +305,6 @@ body {
 
 
 /* home */
-arrume:/* home */
 .home {
   position: relative; /* ADICIONADO para posicionar .wave corretamente */
   overflow: hidden; /* ADICIONADO para evitar que a imagem wave “vaze” */
@@ -1333,8 +1332,6 @@ section {
 }
 
 /* Aplica Montserrat em todo o site */
-
-  /* galeria */
 
 .gallery {
   position: relative;
