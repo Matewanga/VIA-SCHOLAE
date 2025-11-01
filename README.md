@@ -56,7 +56,7 @@ Aplicativo híbrido desenvolvido com:
 | Integrante | Função | Instituição |
 |-------------|--------|--------------|
 | **Rebeca Matewanga Maria Kamalandua** | Desenvolvedora Front-end / Documentação / Website / Gestão | ETEC Zona Leste / FATEC Zona Leste |
-| **Revellin Mendes** | Desenvolvedora Front-end / Documentação / Website | ETEC Zona Leste / UNICSUL |
+| **Revellin Mendes Ferreira** | Desenvolvedora Front-end / Documentação / Website | ETEC Zona Leste / UNICSUL |
 | **Matheus Curci Romano** | Desenvolvedor Full stack / Mobile / Integração de API | ETEC Zona Leste / FATEC Zona Leste |
 
 ---
