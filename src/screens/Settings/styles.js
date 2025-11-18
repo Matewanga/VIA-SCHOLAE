@@ -28,11 +28,15 @@ export const ProfileInfo = styled.View`
   padding: 10px;
 `
 
-export const Account = styled.TouchableOpacity`
+export const Buttons = styled.TouchableOpacity`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   padding: 20px;
+  border-bottom-width: 1px;
+  border-bottom-color: #262626;
+  width: 90%;
+  align-self: center;
 `
 export const Icon = styled.View`
   flex-direction: row;

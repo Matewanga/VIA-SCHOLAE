@@ -6,7 +6,6 @@ import { MaskedTextInput } from 'react-native-mask-text'
 export const CustomInput = ({
   placeholder,
   keyboardType,
-  secureTextEntry,
   onChangeText,
   value,
   maxLength,
@@ -82,6 +81,7 @@ export const CustomInput = ({
   return (
     <View style={inputContainerStyle}>
       {renderLeftIcon()}
+
       {isPhone ? (
         <MaskedTextInput
           mask="(99) 99999-9999"
@@ -90,18 +90,24 @@ export const CustomInput = ({
           value={value}
           style={{ flex: 1 }}
           placeholder={placeholder}
+          textInputProps={{
+            placeholderTextColor: '#8D8D8D',
+          }}
         />
       ) : (
         <TextInput
           placeholder={placeholder}
+          placeholderTextColor="#8D8D8D"
           keyboardType={keyboardType}
           secureTextEntry={isPassword && !showPassword}
           onChangeText={onChangeText}
           value={value}
           maxLength={maxLength}
           style={{ flex: 1 }}
+          color="#262626"
         />
       )}
+
       {renderRightIcon()}
     </View>
   )

@@ -29,17 +29,8 @@ export const RegisterOption = styled.View`
   margin-bottom: 8px;
   align-items: center;
 `
-
-export const RegisterText = styled.Text`
-  font-size: 20px;
-  color: #262626;
-  font-weight: bold;
-`
-
-export const RegisterLink = styled.Text`
-  font-size: 16px;
-  color: #00c4cc;
-  font-weight: bold;
-  margin-top: 5px;
+export const CustomLogo = styled.Image`
+  width: 350px;
+  height: 350px;
 `
 

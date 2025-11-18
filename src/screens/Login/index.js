@@ -1,16 +1,16 @@
 import React from 'react'
 import { KeyboardAvoidingView, Platform } from 'react-native'
 import { useLogin } from './script'
-import { CustomLogo, CustomInput, Header, Button, CustomText } from '../../components'
+import {CustomInput, Header, Button, CustomText } from '../../components'
+import Logo_ViaScholae from '../../../assets/Logo_ViaScholae.png'
 import {
   Container,
   FormWrapper,
   FormCard,
   RegisterOption,
-  RegisterLink,
-  RegisterText,
   LogoWrapper,
   RegisterOptions,
+  CustomLogo
 } from './styles'
 import { useNavigation } from '@react-navigation/native'
 
@@ -29,7 +29,7 @@ export const Login = () => {
 
         <FormWrapper>
           <LogoWrapper>
-            <CustomLogo />
+            <CustomLogo source={Logo_ViaScholae} resizeMode="contain" />
           </LogoWrapper>
 
           <FormCard>

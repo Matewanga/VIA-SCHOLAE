@@ -7,7 +7,6 @@ import {
     UserSearchResultCard,
     UserCardContent,
     UserCardTextContainer,
-    UserPhoneText,
     UserAvatar
 } from './styles'
 import { useNavigation } from '@react-navigation/native'

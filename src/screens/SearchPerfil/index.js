@@ -1,22 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { Text } from 'react-native'
-import {
-  ProfilePic,
-  ButtonMessage,
-} from '../../components'
-import {
-  Container,
-  Header,
-  ProfileContainer,
-  ConProfilePic,
-  ProfileName,
-  SubTitles,
-  CloseButton,
-  ButtonContainer,
-  UserAvatar,
-  styles,
-} from './styles'
-import AntDesign from '@expo/vector-icons/AntDesign'
+import { Button, Header, CustomText } from '../../components'
+import { Container, Info, ProfileImage, ButtonsWrapper, styles } from './styles'
+import Ionicons from '@expo/vector-icons/Ionicons'
 import { useTheme } from 'styled-components/native'
 import { useNavigation } from '@react-navigation/native'
 import { useUser } from '../../database'
@@ -28,64 +13,111 @@ export const PerfilSearch = ({ route }) => {
   const { user } = useUser()
 
   return (
-    <Container>
-      <Header>
-        <CloseButton onPress={() => navigation.goBack()}>
-          <AntDesign name="close" size={35} color={theme.text} />
-        </CloseButton>
-      </Header>
+    <Container
+      contentContainerStyle={{ paddingBottom: 10 }}
+      keyboardShouldPersistTaps="handled"
+    >
+      <Header
+        bgColor="background"
+        txtColor="text"
+        color="text"
+        logoSource={require('../../../assets/Logo_ViaScholae.png')}
+        logoSize={50}
+        height="100"
+        mb="40"
+        size={40}
+      />
 
-      <ProfileContainer>
-        <ConProfilePic>
-          <UserAvatar source={{ uri: profile.profileImageUrl }} resizeMode="cover" />
-        </ConProfilePic>
+      <ProfileImage source={{ uri: profile.profileImageUrl }} />
 
-        <ProfileName>{profile.username}</ProfileName>
-        <SubTitles>
-          <Text>{profile.email}</Text>
-        </SubTitles>
-        <SubTitles>
-          <Text>{profile.phone}</Text>
-        </SubTitles>
+      <Info>
+        <CustomText ft="24" txtColor="white">
+          Nome: {profile.username}
+        </CustomText>
+        <CustomText ft="24" txtColor="white">
+          Contato: {profile.phone}
+        </CustomText>
+      </Info>
 
-      </ProfileContainer>
+      <ButtonsWrapper>
+        <Button
+          title="Mensagem"
+          txtColor="text"
+          pd={10}
+          br={20}
+          width="65%"
+          height={50}
+          ft={20}
+          fw="bold"
+          onPress={() => {
+            // Criar identificadores únicos para o chat
+            const motoristaId =
+              profile.type === 'motorista'
+                ? `motorista_${profile.id}`
+                : `motorista_${user.id}`
+            const responsavelId =
+              profile.type === 'responsavel'
+                ? `responsavel_${profile.id}`
+                : `responsavel_${user.id}`
 
-      <ButtonContainer>
-        {/* {profile.type === 'responsavel' && <ButtonChildren />}
-        {profile.type === 'motorista' && (
-          <BtnRotas
-            onPress={() =>
-              navigation.navigate('ExibirRota', { motoristaId: profile.id })
-            }
+            // Garantir um ID único e consistente para o chat
+            const chatId = [motoristaId, responsavelId].sort().join('_')
+
+            // Navegar para a tela de mensagens
+            navigation.navigate('Message', {
+              profile: profile,
+              user: user,
+              chatId: chatId,
+            })
+          }}
+        ></Button>
+        {profile.type === 'responsavel' && (
+          <Button
+            title="Crianças"
+            txtColor="text"
+            pd={10}
+            br={20}
+            width="65%"
+            height={50}
+            ft={20}
+            fw="bold"
+            onPress={() => navigation.navigate('ExibirCriancas')}
+            icon={<Ionicons name="people" size={35} color="text" />}
           />
-        )} */}
-      </ButtonContainer>
-
-      <ButtonMessage
-        onPress={() => {
-          // Criar identificadores únicos para o chat
-          const motoristaId =
-            profile.type === 'motorista'
-              ? `motorista_${profile.id}`
-              : `motorista_${user.id}`
-          const responsavelId =
-            profile.type === 'responsavel'
-              ? `responsavel_${profile.id}`
-              : `responsavel_${user.id}`
-
-          // Garantir um ID único e consistente para o chat
-          const chatId = [motoristaId, responsavelId].sort().join('_')
-
-          // Navegar para a tela de mensagens
-          navigation.navigate('Message', {
-            profile: profile,
-            user: user,
-            chatId: chatId,
-          })
-        }}
-      >
-        Mensagem
-      </ButtonMessage>
+        )}
+        {profile.type === 'motorista' && (
+          <>
+            <Button
+              title="Rotas"
+              txtColor="text"
+              pd={10}
+              br={20}
+              width="65%"
+              height={50}
+              ft={20}
+              fw="bold"
+              onPress={() =>
+                navigation.navigate('ManageRoute', {
+                  motoristaId: profile.id,
+                  motoristaName: profile.username,
+                })
+              }
+              icon={<Ionicons name="map" size={25} color="text" />}
+            />
+            <Button
+              title="Monitores"
+              txtColor="text"
+              pd={10}
+              br={20}
+              width="65%"
+              height={50}
+              ft={20}
+              fw="bold"
+              icon={<Ionicons name="person" size={25} color="text" />}
+            />
+          </>
+        )}
+      </ButtonsWrapper>
     </Container>
   )
 }

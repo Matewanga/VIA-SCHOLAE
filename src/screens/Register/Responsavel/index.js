@@ -107,6 +107,7 @@ export const Register = () => {
             mb={15}
             ph={20}
             bgColor="#e8e8e8"
+            
           />
           <CustomInput
             placeholder="CEP"

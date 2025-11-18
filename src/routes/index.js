@@ -1,5 +1,4 @@
 import React from 'react'
-import { View } from 'react-native'
 import { IconUser, IconHome, IconMessage, IconSearch } from '../../assets/icons'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
@@ -16,18 +15,16 @@ import {
   TermosdeUso,
   Search,
   Settings,
-  Accessibility,
-  Language,
-  Theme,
   RegisterMotorista,
   RegisterCrianca,
   ExibirCriancas,
   PerfilSearch,
-  RegistroRota,
-  ExibirRotas,
-  RotaMap,
-  Vagas,
+  ManageRoute,
   EditUser,
+  EditRoute,
+  Acessibility,
+  YourAccount,
+  SeatRequests
 } from '../screens'
 
 export const BottomRoute = () => {
@@ -173,21 +170,6 @@ export const Routes = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="Accessibility"
-        component={Accessibility}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Language"
-        component={Language}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Theme"
-        component={Theme}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
         name="EditUser"
         component={EditUser}
         options={{ headerShown: false }}
@@ -203,18 +185,23 @@ export const Routes = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="ExibirRota"
-        component={ExibirRotas}
+        name="ManageRoute"
+        component={ManageRoute}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="RotaMap"
-        component={RotaMap}
+        name="EditRoute"
+        component={EditRoute}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="Vagas"
-        component={Vagas}
+        name="Acessibility"
+        component={Acessibility}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="SeatRequests"
+        component={SeatRequests}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
