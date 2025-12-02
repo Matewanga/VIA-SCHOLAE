@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { KeyboardAvoidingView, Platform, TouchableOpacity, Alert } from 'react-native'
+import {
+  KeyboardAvoidingView,
+  Platform,
+  TouchableOpacity,
+  Alert,
+} from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import {
   Header,
@@ -8,11 +13,7 @@ import {
   CustomInput,
   Button,
 } from '../../../components'
-import {
-  Container,
-  Form,
-  ProfileImage,
-} from './styles'
+import { Container, Form, ProfileImage } from './styles'
 import { useUser } from '../../../database'
 import { editUserPhoto, handleUpdateProfile } from './script'
 
@@ -33,18 +34,22 @@ export const EditUser = () => {
 
   const handleSave = async () => {
     try {
-      await handleUpdateProfile(user, {
-        nome,
-        email,
-        telefone,
-        cep,
-        endereco,
-        rg,
-        cpf,
-        parentesco,
-        placaVan,
-        escolas
-      }, refreshUserData)
+      await handleUpdateProfile(
+        user,
+        {
+          nome,
+          email,
+          telefone,
+          cep,
+          endereco,
+          rg,
+          cpf,
+          parentesco,
+          placaVan,
+          escolas,
+        },
+        refreshUserData
+      )
 
       Alert.alert('Sucesso', 'Perfil atualizado com sucesso!')
       navigation.goBack()
@@ -69,6 +74,29 @@ export const EditUser = () => {
     }
   }, [user])
 
+  useEffect(() => {
+    const fetchAddress = async () => {
+      if (cep.length !== 8) return
+
+      try {
+        const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`)
+        const data = await response.json()
+
+        if (data.erro) {
+          Alert.alert('CEP inválido', 'Não foi possível encontrar o endereço.')
+          return
+        }
+
+        setEndereco(
+          `${data.logradouro}, ${data.bairro}, ${data.localidade} - ${data.uf}`
+        )
+      } catch (err) {
+        console.log('Erro ao buscar CEP:', err)
+      }
+    }
+
+    fetchAddress()
+  }, [cep])
 
   return (
     <KeyboardAvoidingView
@@ -76,7 +104,10 @@ export const EditUser = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
     >
-      <Container contentContainerStyle={{ paddingBottom: 50 }} keyboardShouldPersistTaps="handled">
+      <Container
+        contentContainerStyle={{ paddingBottom: 50 }}
+        keyboardShouldPersistTaps="handled"
+      >
         <Header
           bgColor="background"
           color="text"
@@ -85,7 +116,9 @@ export const EditUser = () => {
           height={100}
           size={40}
         />
-        <Title ft="40" txtColor="darkblue">Seu Perfil</Title>
+        <Title ft="40" txtColor="darkblue">
+          Seu Perfil
+        </Title>
 
         <ProfileImage source={{ uri: user.profileImageUrl }} />
 
@@ -101,7 +134,9 @@ export const EditUser = () => {
           </CustomText>
         </TouchableOpacity>
 
-        <CustomText ft="30" mt="20" mb="3" txtColor="text">Ficha cadastral</CustomText>
+        <CustomText ft="30" mt="20" mb="3" txtColor="text">
+          Ficha cadastral
+        </CustomText>
 
         <Form>
           <CustomInput

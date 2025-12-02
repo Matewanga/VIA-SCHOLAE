@@ -24,7 +24,7 @@ import {
   EditRoute,
   Acessibility,
   YourAccount,
-  SeatRequests
+  SeatRequests,
 } from '../screens'
 
 export const BottomRoute = () => {
@@ -33,38 +33,41 @@ export const BottomRoute = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ color, size }) => {
-          let icon
-          if (route.name === 'Home') {
-            icon = <IconHome width={size} height={size} color={color} />
-          } else if (route.name === 'Mensagens') {
-            icon = <IconMessage width={size} height={size} color={color} />
-          } else if (route.name === 'Pesquisa') {
-            icon = <IconSearch width={size} height={size} color={color} />
-          } else if (route.name === 'Perfil') {
-            icon = <IconUser width={size} height={size} color={color} />
-          }
+        headerShown: false,
+        tabBarShowLabel: false,
 
-          return icon
+        tabBarIcon: ({ color, size }) => {
+          const props = { width: size, height: size, color }
+
+          switch (route.name) {
+            case 'Home':
+              return <IconHome {...props} />
+            case 'Mensagens':
+              return <IconMessage {...props} />
+            case 'Pesquisa':
+              return <IconSearch {...props} />
+            case 'Perfil':
+              return <IconUser {...props} />
+          }
         },
-        tabBarLabel: () => null, // Remover os rótulos
-        tabBarActiveTintColor: '#EEEEEE', // Cor do ícone quando ativo
-        tabBarInactiveTintColor: '#565656', // Cor do ícone quando inativo
+
+        tabBarActiveTintColor: '#262626',
+        tabBarInactiveTintColor: '#565656',
+
         tabBarStyle: {
-          position: 'absolute',
-          bottom: 15,
-          left: 20,
-          right: 20,
           height: 60,
-          borderRadius: 30,
-          borderWidth: 2,
-          borderColor: '#EEEEEE',
-          backgroundColor: '#262626',
-          elevation: 10,
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 10 },
-          shadowOpacity: 0.1,
-          shadowRadius: 10,
+          backgroundColor: '#FFFFFF',
+
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+
+          borderTopWidth: 1,
+          borderTopColor: '#000000',
+
+
+          borderRadius: 0,
         },
       })}
     >

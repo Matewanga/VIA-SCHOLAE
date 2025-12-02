@@ -39,6 +39,8 @@ export const handleUpdateProfile = async (user, formData, refreshUserData) => {
   }
 }
 
+
+
 // Função completa com Alert embutido
 export const editUserPhoto = async (user, refreshUserData) => {
   return new Promise((resolve, reject) => {
