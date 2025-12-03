@@ -1,4 +1,3 @@
-// Home.js - Código completo com identificação de tipo
 import React, { useEffect, useState } from 'react'
 import { View, ScrollView, ActivityIndicator } from 'react-native'
 import { Header, CustomText, Button } from '../../components'
@@ -31,18 +30,8 @@ export const Home = () => {
   const [distancia, setDistancia] = useState(null)
   const [duracao, setDuracao] = useState(null)
 
-  // Identifica o tipo de usuário baseado no campo 'tipo'
   const isMotorista = user?.tipo === 'motorista'
   const isResponsavel = user?.tipo === 'responsavel'
-
-  console.log(
-    'Tipo de usuário:',
-    user?.tipo,
-    'isMotorista:',
-    isMotorista,
-    'isResponsavel:',
-    isResponsavel
-  )
 
   useEffect(() => {
     if (!user?.uid) return
@@ -50,23 +39,17 @@ export const Home = () => {
     const load = async () => {
       try {
         if (isMotorista) {
-          // Motorista: busca suas rotas
-          console.log('Buscando rotas para motorista:', user.uid)
           const r = await buscarRotasDoMotorista(user.uid)
-          console.log('Rotas encontradas para motorista:', r.length)
+
           setRotas(r)
         } else if (isResponsavel) {
-          // Responsável: busca rotas onde ele está incluído
-          console.log('Buscando rotas para responsável:', user.uid)
           const r = await buscarRotasDoResponsavel(user.uid)
-          console.log('Rotas encontradas para responsável:', r.length)
+
           setRotas(r)
 
-          // Se o responsável tem uma rota, já define como atual
           if (r.length > 0) {
-            console.log('Definindo rota atual para responsável:', r[0].id)
             setRotaAtual(r[0])
-            setRotaIniciada(true) // Responsável vê rota como "iniciada" sempre
+            setRotaIniciada(true)
           }
         } else {
           console.log('Tipo de usuário desconhecido:', user?.tipo)
@@ -80,7 +63,6 @@ export const Home = () => {
     load()
   }, [user?.uid, isMotorista, isResponsavel])
 
-  // Resto dos useEffect permanecem iguais...
   useEffect(() => {
     const montar = async () => {
       if (!rotaAtual?.rotaOrdenada?.pontos) {
@@ -123,14 +105,12 @@ export const Home = () => {
     calc()
   }, [rotaAtual])
 
-  // Funções específicas para motorista
   const handleInicioClick = async () => {
-    if (!isMotorista) return // Só motorista pode clicar
+    if (!isMotorista) return
 
     try {
-      console.log('Motorista clicou em Início, buscando rotas finais...')
       const todasRotasFinais = await buscarTodasRotasFinaisDoMotorista(user.uid)
-      console.log('Rotas finais encontradas:', todasRotasFinais?.length || 0)
+
       setRotasFinais(todasRotasFinais || [])
       setMostrarBubble(true)
     } catch (error) {
@@ -139,9 +119,8 @@ export const Home = () => {
   }
 
   const handleFinalizarClick = () => {
-    if (!isMotorista) return // Só motorista pode finalizar
+    if (!isMotorista) return
 
-    console.log('Motorista finalizando rota...')
     setRotaIniciada(false)
     setRotaAtual(null)
     setRotaGeojson(null)
@@ -150,9 +129,8 @@ export const Home = () => {
   }
 
   const handleSelecionarRota = (rotaSelecionada) => {
-    if (!isMotorista) return // Só motorista pode selecionar
+    if (!isMotorista) return
 
-    console.log('Motorista selecionou rota:', rotaSelecionada.id)
     setRotaAtual(rotaSelecionada)
     setMostrarBubble(false)
     setRotaIniciada(true)
@@ -176,7 +154,6 @@ export const Home = () => {
     )
   }
 
-  // ========== RESPONSÁVEL SEM ROTA ==========
   if (isResponsavel && rotas.length === 0) {
     return (
       <Container>
@@ -213,7 +190,6 @@ export const Home = () => {
     )
   }
 
-  // ========== MOTORISTA SEM ROTAS DISPONÍVEIS ==========
   if (isMotorista && rotas.length === 0) {
     return (
       <Container>
@@ -250,7 +226,6 @@ export const Home = () => {
     )
   }
 
-  // ========== MOTORISTA COM ROTAS MAS SEM SELECIONAR ==========
   if (isMotorista && !rotaAtual) {
     return (
       <Container>
@@ -309,7 +284,6 @@ export const Home = () => {
     )
   }
 
-  // ========== TELA COM ROTA (AMBOS OS TIPOS) ==========
   return (
     <Container>
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
@@ -324,7 +298,6 @@ export const Home = () => {
           isMotorista={isMotorista}
         />
 
-        {/* BOTÃO SÓ PARA MOTORISTA */}
         {isMotorista && (
           <View style={{ alignItems: 'center', paddingVertical: 15 }}>
             <Button
@@ -342,19 +315,16 @@ export const Home = () => {
           </View>
         )}
 
-        {/* TIMELINE PARA AMBOS */}
         {distancia && duracao && (
           <Timeline distancia={distancia} duracao={duracao} />
         )}
 
-        {/* DRIVER INFO PARA AMBOS */}
         <DriverInfo
           user={user}
           rotaAtual={rotaAtual}
           isMotorista={isMotorista}
         />
 
-        {/* BUBBLE SÓ PARA MOTORISTA */}
         {isMotorista && (
           <BubbleFinalRoutes
             mostrarBubble={mostrarBubble}

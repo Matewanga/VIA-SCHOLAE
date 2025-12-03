@@ -1,4 +1,3 @@
-// map.js
 import React from 'react'
 import { View } from 'react-native'
 import MapboxGL from '@rnmapbox/maps'
@@ -9,7 +8,12 @@ MapboxGL.setAccessToken(
   'pk.eyJ1IjoiY29vaW5nbXRjZG9hIiwiYSI6ImNtZHMxYTdmNDBveHAyaXBwNmk0cGRtbDUifQ.mzr4-ccJpyUD5cH08FtGbQ'
 )
 
-export function MapSection({ rotaGeojson, rotaAtual, rotaIniciada, isMotorista = true }) {
+export function MapSection({
+  rotaGeojson,
+  rotaAtual,
+  rotaIniciada,
+  isMotorista = true,
+}) {
   const mostrarComoIniciada = isMotorista ? rotaIniciada : true
   const rotaSelecionada = rotaAtual?.rotaOrdenada?.pontos?.length > 0
   const cameraConfig = calcularCentroMapa(rotaAtual)
@@ -66,7 +70,6 @@ export function MapSection({ rotaGeojson, rotaAtual, rotaIniciada, isMotorista =
 
   return (
     <View style={{ height: 350, width: '100%', position: 'relative' }}>
-      {/* Overlay escuro quando não tem rota (só para motorista) */}
       {isMotorista && !rotaSelecionada && (
         <View
           style={{
@@ -103,7 +106,6 @@ export function MapSection({ rotaGeojson, rotaAtual, rotaIniciada, isMotorista =
         </View>
       )}
 
-      {/* Para responsável sem rota */}
       {!isMotorista && !rotaSelecionada && (
         <View
           style={{
@@ -140,7 +142,6 @@ export function MapSection({ rotaGeojson, rotaAtual, rotaIniciada, isMotorista =
         </View>
       )}
 
-      {/* Mapa */}
       <MapboxGL.MapView
         style={{
           flex: 1,
@@ -184,7 +185,7 @@ export function MapSection({ rotaGeojson, rotaAtual, rotaIniciada, isMotorista =
                       : p.type === 'responsavel'
                         ? isMotorista
                           ? '#FBBC05'
-                          : '#4285F4' // Responsável vê seu ponto como azul
+                          : '#4285F4'
                         : '#EA4335',
                   justifyContent: 'center',
                   alignItems: 'center',

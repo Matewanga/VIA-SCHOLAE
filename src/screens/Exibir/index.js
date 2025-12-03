@@ -7,8 +7,9 @@ import { Button, Header, CustomText, Title } from '../../components'
 import { Ionicons } from '@expo/vector-icons'
 import { fetchCriancasDoResponsavel } from './script'
 
-export const ExibirCriancas = () => {
+export const ExibirCriancas = ({ route }) => {
   const navigation = useNavigation()
+  const { responsavelId } = route.params
   const { user } = useUser()
   const [criancas, setCriancas] = useState([])
 
@@ -33,7 +34,7 @@ export const ExibirCriancas = () => {
   useEffect(() => {
     async function carregarCriancas() {
       try {
-        const lista = await fetchCriancasDoResponsavel(user.uid)
+        const lista = await fetchCriancasDoResponsavel(responsavelId)
         setCriancas(lista)
       } catch (error) {
         Alert.alert('Erro', 'Não foi possível carregar as crianças.')
@@ -41,33 +42,42 @@ export const ExibirCriancas = () => {
     }
 
     carregarCriancas()
-  }, [user.uid])
+  }, [responsavelId])
 
   const renderItem = ({ item }) => (
     <Card>
-      <TouchableOpacity
-        style={{ position: 'absolute', top: -5, right: 15, zIndex: 1 }}
-        onPress={() => Alert.alert('Excluir', `Excluir ${item.username}?`)}
-      >
-        <Ionicons name="trash" size={20} color="red" />
-      </TouchableOpacity>
+      {user.type === 'responsavel' && (
+        <TouchableOpacity
+          style={{ position: 'absolute', top: -5, right: 15, zIndex: 1 }}
+          onPress={() => Alert.alert('Excluir', `Excluir ${item.username}?`)}
+        >
+          <Ionicons name="trash" size={20} color="red" />
+        </TouchableOpacity>
+      )}
 
-      <TouchableOpacity onPress={() => navigation.navigate('EditChildren', { criancaId: item.id, dadosCrianca: item })}>
+      <TouchableOpacity
+        onPress={() => {
+          if (user.type === 'responsavel') {
+            navigation.navigate('EditChildren', {
+              criancaId: item.id,
+              dadosCrianca: item,
+            })
+          }
+        }}
+        disabled={user.type !== 'responsavel'}
+      >
         {item.profileImageUrl ? (
           <Foto source={{ uri: item.profileImageUrl }} />
         ) : (
-          <View style={{
-            width: 100,
-            height: 100,
-            borderRadius: 12,
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginBottom: 8,
-          }} />
+          <View style={{ width: 100, height: 100 }} />
         )}
 
-        <Title ft="25" txtColor="text">{item.username}</Title>
-        <CustomText ft="18" mt="-20" txtColor="textsecondary">{calculaIdade(item.dataNasc)} anos</CustomText>
+        <Title ft="25" txtColor="text">
+          {item.username}
+        </Title>
+        <CustomText ft="18" mt="-20" txtColor="textsecondary">
+          {calculaIdade(item.dataNasc)} anos
+        </CustomText>
       </TouchableOpacity>
     </Card>
   )
@@ -80,7 +90,9 @@ export const ExibirCriancas = () => {
         iconName="chevron-back"
         size={40}
         color="white"
-      >Crianças</Header>
+      >
+        Crianças
+      </Header>
 
       <FlatList
         data={criancas}
@@ -95,19 +107,21 @@ export const ExibirCriancas = () => {
           </Text>
         }
         ListFooterComponent={
-          <View style={{ alignItems: 'center', marginTop: 20 }}>
-            <Button
-              title="Adicionar"
-              txtColor="text"
-              pd={15}
-              br={20}
-              width="65%"
-              height={45}
-              ft={16}
-              fw="bold"
-              onPress={() => navigation.navigate('RegisterCrianca')}
-            />
-          </View>
+          user.type === 'responsavel' && (
+            <View style={{ alignItems: 'center', marginTop: 20 }}>
+              <Button
+                title="Adicionar"
+                txtColor="text"
+                pd={15}
+                br={20}
+                width="65%"
+                height={45}
+                ft={16}
+                fw="bold"
+                onPress={() => navigation.navigate('RegisterCrianca')}
+              />
+            </View>
+          )
         }
       />
     </Container>

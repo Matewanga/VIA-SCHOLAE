@@ -5,6 +5,7 @@ import Ionicons from '@expo/vector-icons/Ionicons'
 import { useTheme } from 'styled-components/native'
 import { useNavigation } from '@react-navigation/native'
 import { useUser } from '../../database'
+import { getChatId } from '../../utils/chatUtils'
 
 export const PerfilSearch = ({ route }) => {
   const { profile } = route.params
@@ -21,6 +22,7 @@ export const PerfilSearch = ({ route }) => {
         bgColor="background"
         txtColor="text"
         color="text"
+        showTitle={true}
         logoSource={require('../../../assets/Logo_ViaScholae.png')}
         logoSize={50}
         height="100"
@@ -50,25 +52,43 @@ export const PerfilSearch = ({ route }) => {
           ft={20}
           fw="bold"
           onPress={() => {
-            // Criar identificadores únicos para o chat
-            const motoristaId =
-              profile.type === 'motorista'
-                ? `motorista_${profile.id}`
-                : `motorista_${user.id}`
-            const responsavelId =
-              profile.type === 'responsavel'
-                ? `responsavel_${profile.id}`
-                : `responsavel_${user.id}`
+            const profileId = profile.uid || profile.id || profile.userId
+            const currentUserId = user.uid || user.id || user.userId
 
-            // Garantir um ID único e consistente para o chat
+            if (!profileId || !currentUserId) {
+              console.error('IDs não encontrados!')
+              return
+            }
+
+            let motoristaId, responsavelId
+
+            if (profile.type === 'motorista') {
+              motoristaId = `motorista_${profileId}`
+              responsavelId = `responsavel_${currentUserId}`
+            } else if (profile.type === 'responsavel') {
+              motoristaId = `motorista_${currentUserId}`
+              responsavelId = `responsavel_${profileId}`
+            } else {
+              motoristaId = `motorista_${currentUserId}`
+              responsavelId = `responsavel_${profileId}`
+            }
+
             const chatId = [motoristaId, responsavelId].sort().join('_')
 
-            // Navegar para a tela de mensagens
-            navigation.navigate('Message', {
-              profile: profile,
-              user: user,
-              chatId: chatId,
-            })
+            console.log('Chat ID gerado:', chatId)
+
+            try {
+              const chatId = getChatId(user, profile)
+
+              navigation.navigate('Message', {
+                profile: profile,
+                user: user,
+                chatId: chatId,
+              })
+            } catch (error) {
+              console.error('Erro ao criar chat:', error)
+              alert('Erro ao abrir conversa')
+            }
           }}
         ></Button>
         {profile.type === 'responsavel' && (
@@ -81,7 +101,12 @@ export const PerfilSearch = ({ route }) => {
             height={50}
             ft={20}
             fw="bold"
-            onPress={() => navigation.navigate('ExibirCriancas')}
+            onPress={() =>
+              navigation.navigate('ExibirCriancas', {
+                responsavelId: profile.id,
+                responsavelName: profile.username,
+              })
+            }
             icon={<Ionicons name="people" size={35} color="text" />}
           />
         )}

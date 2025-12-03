@@ -97,27 +97,18 @@ export async function carregarRotasFinais(idRota) {
   return rotas
 }
 
-// script.js - Adicione esta nova função
 export async function buscarTodasRotasFinaisDoMotorista(userId) {
   try {
-    console.log('Buscando TODAS rotas finais do motorista:', userId)
-
     const db = getFirestore()
 
-    // 1. Primeiro busca todas as rotas deste motorista
     const rotasRef = collection(db, 'rotas')
     const q = query(rotasRef, where('motoristaId', '==', userId))
     const rotasSnap = await getDocs(q)
 
-    console.log('Rotas encontradas:', rotasSnap.size)
-
     const todasRotasFinais = []
 
-    // 2. Para cada rota, busca suas rotas finais
     for (const rotaDoc of rotasSnap.docs) {
       try {
-        console.log('Buscando rotas finais da rota:', rotaDoc.id)
-
         const rotasFinaisRef = collection(
           db,
           'rotas',
@@ -125,8 +116,6 @@ export async function buscarTodasRotasFinaisDoMotorista(userId) {
           'rotasFinais'
         )
         const finaisSnap = await getDocs(rotasFinaisRef)
-
-        console.log(`Rotas finais na rota ${rotaDoc.id}:`, finaisSnap.size)
 
         finaisSnap.forEach((finalDoc) => {
           const dados = finalDoc.data()
@@ -144,7 +133,6 @@ export async function buscarTodasRotasFinaisDoMotorista(userId) {
       }
     }
 
-    console.log('Total de rotas finais coletadas:', todasRotasFinais.length)
     return todasRotasFinais
   } catch (error) {
     console.error('Erro geral ao buscar rotas finais:', error)
@@ -152,39 +140,37 @@ export async function buscarTodasRotasFinaisDoMotorista(userId) {
   }
 }
 
-
 export async function buscarRotasDoResponsavel(userId) {
   try {
-    console.log('🔍 Buscando rotas do responsável:', userId)
-    
     const db = getFirestore()
-    
+
     const rotasRef = collection(db, 'rotas')
     const rotasSnap = await getDocs(rotasRef)
-    
-    console.log('📊 Total de rotas no sistema:', rotasSnap.size)
-    
+
     const rotasDoResponsavel = []
-    
+
     for (const rotaDoc of rotasSnap.docs) {
       try {
-        const rotasFinaisRef = collection(db, 'rotas', rotaDoc.id, 'rotasFinais')
+        const rotasFinaisRef = collection(
+          db,
+          'rotas',
+          rotaDoc.id,
+          'rotasFinais'
+        )
         const finaisSnap = await getDocs(rotasFinaisRef)
-        
-        console.log(`📁 Rotas finais na rota ${rotaDoc.id}:`, finaisSnap.size)
-        
-        finaisSnap.forEach(finalDoc => {
+
+        finaisSnap.forEach((finalDoc) => {
           const dados = finalDoc.data()
-          
+
           const temResponsavel = dados.responsaveisIncluidos?.some(
-            r => r.id === userId
+            (r) => r.id === userId
           )
-          
+
           if (temResponsavel) {
-            console.log('✅ Responsável encontrado na rota:', finalDoc.id)
-            
-            const responsavel = dados.responsaveisIncluidos.find(r => r.id === userId)
-            
+            const responsavel = dados.responsaveisIncluidos.find(
+              (r) => r.id === userId
+            )
+
             const rotaPreparada = {
               id: finalDoc.id,
               idRotaPai: rotaDoc.id,
@@ -213,9 +199,9 @@ export async function buscarRotasDoResponsavel(userId) {
                     icone: 'school',
                   },
                 ],
-              }
+              },
             }
-            
+
             rotasDoResponsavel.push(rotaPreparada)
           }
         })
@@ -223,10 +209,8 @@ export async function buscarRotasDoResponsavel(userId) {
         console.error(`❌ Erro ao verificar rota ${rotaDoc.id}:`, error)
       }
     }
-    
-    console.log('📋 Rotas encontradas para o responsável:', rotasDoResponsavel.length)
+
     return rotasDoResponsavel
-    
   } catch (error) {
     console.error('❌ Erro geral ao buscar rotas do responsável:', error)
     return []

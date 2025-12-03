@@ -1,4 +1,3 @@
-// bubble.js - VERSÃO CORRIGIDA
 import React from 'react'
 import { View, Modal, TouchableOpacity, ScrollView } from 'react-native'
 import { Button, CustomText } from '../../components'
@@ -13,8 +12,6 @@ export function BubbleFinalRoutes({
   rotasFinais,
   rotaAtual,
 }) {
-  console.log('DEBUG: RotasFinais no bubble:', rotasFinais.length)
-
   return (
     <Modal
       animationType="slide"
@@ -98,7 +95,6 @@ export function BubbleFinalRoutes({
                         },
                       }
 
-                      // Chama a função callback passada
                       if (onSelecionarRota) {
                         onSelecionarRota(rotaPreparada)
                       }

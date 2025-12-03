@@ -8,18 +8,8 @@ import {
 } from 'react-native'
 import { CustomText, Header, Title } from '../../components'
 import { useUser } from '../../database'
-import { db } from '../../config/firebase'
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  getDoc,
-  updateDoc,
-  doc,
-  setDoc,
-} from 'firebase/firestore'
 import Icon from 'react-native-vector-icons/Ionicons'
+import { carregarVagas, handleStatusAction } from './script'
 
 export const SeatRequests = () => {
   const { user } = useUser()
@@ -28,236 +18,18 @@ export const SeatRequests = () => {
   const [processando, setProcessando] = useState({})
 
   useEffect(() => {
-    const load = async () => {
-      try {
-        const ref = collection(db, 'VagasSolicitadas')
-        const q = query(ref, where('idMotorista', '==', user.uid))
-        const snap = await getDocs(q)
-
-        const lista = snap.docs.map((d) => ({ id: d.id, ...d.data() }))
-        setVagas(lista)
-      } catch (err) {
-        console.log('Erro ao carregar vagas:', err)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    load()
+    carregarVagas(user, setVagas, setLoading)
   }, [])
 
-  const MAPBOX_TOKEN =
-    'pk.eyJ1IjoiY29vaW5nbXRjZG9hIiwiYSI6ImNtZHMxYTdmNDBveHAyaXBwNmk0cGRtbDUifQ.mzr4-ccJpyUD5cH08FtGbQ'
-
-  const handleStatus = async (idVaga, novoStatus) => {
-    try {
-      setProcessando((prev) => ({ ...prev, [idVaga]: true }))
-
-      const vagaRef = doc(db, 'VagasSolicitadas', idVaga)
-      await updateDoc(vagaRef, {
-        status: novoStatus,
-        dataAtualizacao: new Date().toISOString(),
-      })
-
-      setVagas((old) =>
-        old.map((item) =>
-          item.id === idVaga
-            ? {
-                ...item,
-                status: novoStatus,
-                dataAtualizacao: new Date().toISOString(),
-              }
-            : item
-        )
-      )
-
-      if (novoStatus !== 'aceito') {
-        setProcessando((prev) => ({ ...prev, [idVaga]: false }))
-        return
-      }
-
-      const vagaAtualizada = vagas.find((v) => v.id === idVaga)
-      if (!vagaAtualizada) {
-        console.log('Vaga não encontrada.')
-        setProcessando((prev) => ({ ...prev, [idVaga]: false }))
-        return
-      }
-
-      const {
-        idResponsavel,
-        idRota,
-        nomeResponsavel,
-        fotoResponsavel,
-        nomeEscola,
-      } = vagaAtualizada
-
-      console.log('Processando aceite para:', nomeResponsavel)
-
-      const responsavelRef = doc(db, 'responsaveis', idResponsavel)
-      const respDoc = await getDoc(responsavelRef).catch(() => null)
-
-      let respData
-
-      if (respDoc && respDoc.exists()) {
-        respData = respDoc.data()
-        console.log('Encontrado pelo ID do documento')
-      } else {
-        console.log('Tentando buscar por query...')
-        const respQuery = query(
-          collection(db, 'responsaveis'),
-          where('id', '==', idResponsavel)
-        )
-        const respSnap = await getDocs(respQuery)
-
-        if (respSnap.empty) {
-          console.log('Responsável não encontrado.')
-          setProcessando((prev) => ({ ...prev, [idVaga]: false }))
-          return
-        }
-
-        respData = respSnap.docs[0].data()
-      }
-
-      const enderecoTexto =
-        respData.endereco ||
-        respData.enderecoTexto ||
-        respData.address ||
-        respData.enderecoCompleto
-
-      if (!enderecoTexto) {
-        console.log('Responsável não possui endereço salvo:', respData)
-        setProcessando((prev) => ({ ...prev, [idVaga]: false }))
-        return
-      }
-
-      console.log('Endereço encontrado:', enderecoTexto)
-
-      const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-        enderecoTexto
-      )}.json?access_token=${MAPBOX_TOKEN}&country=BR`
-
-      const response = await fetch(url)
-      const json = await response.json()
-
-      if (!json.features || json.features.length === 0) {
-        console.log('Endereço não encontrado no Mapbox:', json)
-        setProcessando((prev) => ({ ...prev, [idVaga]: false }))
-        return
-      }
-
-      const [lng, lat] = json.features[0].center
-      console.log('Coordenadas encontradas:', lat, lng)
-
-      const rotaRef = doc(db, 'rotas', idRota)
-      const rotaDoc = await getDoc(rotaRef)
-
-      if (!rotaDoc.exists()) {
-        console.log('Rota original não encontrada')
-        setProcessando((prev) => ({ ...prev, [idVaga]: false }))
-        return
-      }
-
-      const rotaData = rotaDoc.data()
-
-      const rotasFinaisRef = collection(db, 'rotas', idRota, 'rotasFinais')
-      const qFinal = query(rotasFinaisRef, where('status', '==', 'ativa'))
-      const snapFinal = await getDocs(qFinal)
-      if (!snapFinal.empty) {
-        const docExistente = snapFinal.docs[0]
-        const rotaExistente = docExistente.data()
-
-        const novosResponsaveis = [
-          ...(rotaExistente.responsaveisIncluidos || []),
-          {
-            id: idResponsavel,
-            nome: nomeResponsavel,
-            foto: fotoResponsavel,
-            escola: nomeEscola,
-            endereco: enderecoTexto,
-            coordenadas: { lat, lng },
-            dataInclusao: new Date().toISOString(),
-          },
-        ]
-
-        const novasCoords = [
-          ...(rotaExistente.routeCoordsComResponsavel?.coordinates || []),
-          { lat, lng },
-        ]
-
-        await updateDoc(docExistente.ref, {
-          responsaveisIncluidos: novosResponsaveis,
-          'routeCoordsComResponsavel.coordinates': novasCoords,
-          dataAtualizacao: new Date().toISOString(),
-        })
-
-        await updateDoc(vagaRef, {
-          rotaFinalId: docExistente.id,
-          rotaFinalCriada: true,
-        })
-
-        console.log('🔄 Responsável adicionado à rota final já existente!')
-
-        return
-      }
-
-      const rotaFinalId = `${idRota}_${idResponsavel}_${Date.now()}`
-
-      const rotaFinal = {
-        ...rotaData,
-
-        responsaveisIncluidos: [
-          {
-            id: idResponsavel,
-            nome: nomeResponsavel,
-            foto: fotoResponsavel,
-            escola: nomeEscola,
-            endereco: enderecoTexto,
-            coordenadas: { lat, lng },
-            dataInclusao: new Date().toISOString(),
-          },
-        ],
-
-        idRotaOriginal: idRota,
-        idMotorista: user.uid,
-        dataCriacao: new Date().toISOString(),
-        status: 'ativa',
-        ordem: snapFinal.size + 1,
-
-        routeCoordsComResponsavel: {
-          coordinates: [
-            ...(rotaData.routeCoords?.coordinates || []),
-            { lat, lng },
-          ],
-          type: 'LineString',
-        },
-      }
-
-      const rotaFinalRef = doc(db, 'rotas', idRota, 'rotasFinais', rotaFinalId)
-      await setDoc(rotaFinalRef, rotaFinal)
-
-      console.log('✅ Rota final criada com sucesso!')
-
-      await updateDoc(vagaRef, {
-        rotaFinalId: rotaFinalId,
-        rotaFinalCriada: true,
-      })
-
-      setVagas((old) =>
-        old.map((item) =>
-          item.id === idVaga
-            ? {
-                ...item,
-                rotaFinalId: rotaFinalId,
-                rotaFinalCriada: true,
-              }
-            : item
-        )
-      )
-    } catch (err) {
-      console.log('Erro ao aceitar vaga:', err)
-    } finally {
-      setProcessando((prev) => ({ ...prev, [idVaga]: false }))
-    }
+  const handleStatus = (idVaga, novoStatus) => {
+    handleStatusAction({
+      idVaga,
+      novoStatus,
+      vagas,
+      setVagas,
+      setProcessando,
+      user,
+    })
   }
 
   if (loading) {
@@ -287,6 +59,7 @@ export const SeatRequests = () => {
         Solicitações Recebidas
       </Title>
 
+      {/* LISTA DE VAGAS PENDENTES */}
       <FlatList
         data={vagas.filter((v) => v.status === 'pendente')}
         keyExtractor={(item) => item.id}
@@ -334,6 +107,7 @@ export const SeatRequests = () => {
             </View>
 
             <View style={{ flexDirection: 'row', gap: 10 }}>
+              {/* BOTÃO RECUSAR */}
               <TouchableOpacity
                 onPress={() => handleStatus(item.id, 'recusado')}
                 disabled={processando[item.id]}
@@ -351,6 +125,7 @@ export const SeatRequests = () => {
                 )}
               </TouchableOpacity>
 
+              {/* BOTÃO ACEITAR */}
               <TouchableOpacity
                 onPress={() => handleStatus(item.id, 'aceito')}
                 disabled={processando[item.id]}
@@ -376,6 +151,7 @@ export const SeatRequests = () => {
         Vagas Aceitas
       </Title>
 
+      {/* LISTA DE VAGAS ACEITAS */}
       <FlatList
         data={vagas.filter((v) => v.status === 'aceito')}
         keyExtractor={(item) => item.id}

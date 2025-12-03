@@ -86,13 +86,12 @@ export const CustomInput = ({
         <MaskedTextInput
           mask="(99) 99999-9999"
           keyboardType="numeric"
-          onChangeText={onChangeText}
+          onChangeText={(text) => onChangeText(text)}
           value={value}
           style={{ flex: 1 }}
           placeholder={placeholder}
-          textInputProps={{
-            placeholderTextColor: '#8D8D8D',
-          }}
+          placeholderTextColor="#8D8D8D"
+          color="#262626"
         />
       ) : (
         <TextInput
@@ -100,7 +99,7 @@ export const CustomInput = ({
           placeholderTextColor="#8D8D8D"
           keyboardType={keyboardType}
           secureTextEntry={isPassword && !showPassword}
-          onChangeText={onChangeText}
+          onChangeText={(text) => onChangeText(text)}
           value={value}
           maxLength={maxLength}
           style={{ flex: 1 }}

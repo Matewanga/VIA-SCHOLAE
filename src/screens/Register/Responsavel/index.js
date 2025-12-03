@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { KeyboardAvoidingView, Platform, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import { Header, Button, CustomInput, Title, CustomText } from '../../../components'
+import {
+  Header,
+  Button,
+  CustomInput,
+  Title,
+  CustomText,
+} from '../../../components'
 import { Container, Form, ButtonContainer, ImageWrapper } from './styles'
 import defaultProfile from '../../../../assets/default-user.jpg'
 
@@ -29,7 +35,9 @@ export const Register = () => {
   const [image, setImage] = useState(null)
 
   useEffect(() => {
-    fetchAddressByCep(cep, setEnd)
+    if (cep.length === 9) {
+      fetchAddressByCep(cep, setEnd)
+    }
   }, [cep])
 
   const handleCepChange = (text) => {
@@ -46,8 +54,13 @@ export const Register = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
     >
-      <Container contentContainerStyle={{ paddingBottom: 30 }} keyboardShouldPersistTaps="handled">
-        <Header bgColor="blue" txtColor="white" size={40} color="white">CADASTRO RESPONSÁVEL</Header>
+      <Container
+        contentContainerStyle={{ paddingBottom: 30 }}
+        keyboardShouldPersistTaps="handled"
+      >
+        <Header bgColor="blue" txtColor="white" size={40} color="white">
+          CADASTRO RESPONSÁVEL
+        </Header>
         <Title ft={35} mt={25} mb={1}>
           Faça seu Cadastro:
         </Title>
@@ -100,6 +113,7 @@ export const Register = () => {
             placeholder="Telefone"
             keyboardType="phone-pad"
             onChangeText={setPhone}
+            isPhone
             value={phone}
             maxLength={11}
             height={50}
@@ -107,7 +121,6 @@ export const Register = () => {
             mb={15}
             ph={20}
             bgColor="#e8e8e8"
-            
           />
           <CustomInput
             placeholder="CEP"
@@ -169,7 +182,8 @@ export const Register = () => {
           <CustomInput
             placeholder="Senha"
             onChangeText={setPassword}
-            isPassword value={password}
+            isPassword
+            value={password}
             maxLength={16}
             height={50}
             width={330}

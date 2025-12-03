@@ -7,67 +7,48 @@ export const Container = styled.View`
   background-color: white;
 `
 
-export const SearchContainer = styled.View`
+export const ChatItem = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
-  margin-bottom: ${theme.metrics.px(20)}px;
+  padding: 15px;
+  background-color: white;
+  border-bottom-width: 1px;
+  border-bottom-color: #eee;
+`
+
+export const ProfileImage = styled.Image`
+  width: 80px;
+  height: 80px;
+  border-radius: 40px;
+  background-color: #ddd;
 `
 
 export const ChatContent = styled.View`
+  flex: 1;
   flex-direction: row;
+  justify-content: space-between;
   align-items: center;
+  margin-left: 15px;
 `
 
-export const ChatTextContainer = styled.View`
-  margin-left: ${theme.metrics.px(10)}px;
-`
-
-export const Input = styled.TextInput.attrs(props => ({
-  placeholderTextColor: props.theme.gray,
-}))`
-  height: ${theme.metrics.px(35)}px;
-  width: ${theme.metrics.px(340)}px;
-  border-color: ${(props) => props.theme.yellow};
-  border-width: ${theme.metrics.px(1)}px;
-  margin-bottom: ${theme.metrics.px(20)}px;
-  padding-horizontal: ${theme.metrics.px(10)}px;
-  margin-left: ${theme.metrics.px(25)}px;
-  border-radius: ${theme.metrics.px(10)}px;
-  background: ${(props) => props.theme.background};
-  color: ${props => props.theme.text};
-`;
-
-export const TitleText = styled.Text`
-  font-size: ${theme.metrics.px(50)}px;
-  text-align: left;
-  margin-bottom: ${theme.metrics.px(20)}px;
-  margin-top: ${theme.metrics.px(30)}px;
-  color: ${(props) => props.theme.text};
+export const ChatInfo = styled.View`
+  flex: 1;
+  margin-right: 10px;
 `
 
 export const ChatName = styled.Text`
-  font-size: ${theme.metrics.px(20)}px;
-  margin-top: ${theme.metrics.px(-5)}px;
-  font-weight: 700;
-  color: ${(props) => props.theme.text};
+  font-size: 25px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 2px;
 `
 
 export const ChatMessage = styled.Text`
-  font-size: ${theme.metrics.px(14)}px;
-  color: ${(props) => props.theme.textsecondary};
+  font-size: 16px;
+  color: #666;
 `
 
-export const ChatItem = styled.TouchableOpacity`
-  padding: ${theme.metrics.px(15)}px;
-  background: ${props => props.theme.primary};
-  border-radius: ${theme.metrics.px(10)}px;
-  margin-bottom: ${theme.metrics.px(10)}px;
-  height: ${theme.metrics.px(76)}px;
+export const ChatTime = styled.Text`
+  font-size: 16px;
+  color: #999;
 `
-
-export const styles = StyleSheet.create({
-  pic: {
-    width: 45,
-    height: 45,
-  },
-})

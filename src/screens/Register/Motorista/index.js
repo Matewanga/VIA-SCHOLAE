@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { TouchableOpacity, Alert, KeyboardAvoidingView, Platform, Image } from 'react-native'
+import {
+  TouchableOpacity,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  Image,
+} from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { MaterialIcons } from '@expo/vector-icons'
 import {
@@ -42,7 +48,9 @@ export const RegisterMotorista = () => {
   const [image, setImage] = useState(null)
 
   useEffect(() => {
-    fetchAddressByCep(cep, setEnd)
+    if (cep.length === 9) {
+      fetchAddressByCep(cep, setEnd)
+    }
   }, [cep])
 
   const handleCepChange = (text) => {
@@ -59,11 +67,16 @@ export const RegisterMotorista = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
     >
-      <Container contentContainerStyle={{ paddingBottom: 30 }}
-        keyboardShouldPersistTaps="handled">
-
-        <Header bgColor="blue" txtColor="white" color="white" size={40}>CADASTRO MOTORISTA</Header>
-        <Title ft={35} mt={25} mb={1}>Faça seu Cadastro:</Title>
+      <Container
+        contentContainerStyle={{ paddingBottom: 30 }}
+        keyboardShouldPersistTaps="handled"
+      >
+        <Header bgColor="blue" txtColor="white" color="white" size={40}>
+          CADASTRO MOTORISTA
+        </Header>
+        <Title ft={35} mt={25} mb={1}>
+          Faça seu Cadastro:
+        </Title>
 
         <Form>
           <ImageWrapper>
@@ -75,7 +88,7 @@ export const RegisterMotorista = () => {
           </ImageWrapper>
           <ButtonContainer style={{ marginBottom: 20 }}>
             <Button
-              title={image ? "Alterar foto" : "Escolher foto"}
+              title={image ? 'Alterar foto' : 'Escolher foto'}
               txtColor="text"
               pd={15}
               br={20}
@@ -190,8 +203,15 @@ export const RegisterMotorista = () => {
           />
 
           {/* Campo para imagem da CNH */}
-          <CustomText ft={23} mt={10} mb={20} txtColor="text">Insira uma foto frente e verso da CNH</CustomText>
-          <Button title="Selecionar Frente CNH" width="70%" txtColor="text" onPress={() => pickImage(setCnhFrente)} />
+          <CustomText ft={23} mt={10} mb={20} txtColor="text">
+            Insira uma foto frente e verso da CNH
+          </CustomText>
+          <Button
+            title="Selecionar Frente CNH"
+            width="70%"
+            txtColor="text"
+            onPress={() => pickImage(setCnhFrente)}
+          />
           {cnhFrente && (
             <ImgContainer>
               <ImagePreview source={{ uri: cnhFrente }} resizeMode="cover" />
@@ -210,7 +230,11 @@ export const RegisterMotorista = () => {
                     'Deseja remover a imagem "Frente da CNH"?',
                     [
                       { text: 'Cancelar', style: 'cancel' },
-                      { text: 'Remover', onPress: () => setCnhFrente(null), style: 'destructive' },
+                      {
+                        text: 'Remover',
+                        onPress: () => setCnhFrente(null),
+                        style: 'destructive',
+                      },
                     ]
                   )
                 }
@@ -220,7 +244,12 @@ export const RegisterMotorista = () => {
             </ImgContainer>
           )}
 
-          <Button title="Selecionar Verso CNH" width="70%" txtColor="text" onPress={() => pickImage(setCnhVerso)} />
+          <Button
+            title="Selecionar Verso CNH"
+            width="70%"
+            txtColor="text"
+            onPress={() => pickImage(setCnhVerso)}
+          />
           {cnhVerso && (
             <ImgContainer>
               <ImagePreview source={{ uri: cnhVerso }} resizeMode="cover" />
@@ -239,7 +268,11 @@ export const RegisterMotorista = () => {
                     'Deseja remover a imagem "Verso da CNH"?',
                     [
                       { text: 'Cancelar', style: 'cancel' },
-                      { text: 'Remover', onPress: () => setCnhVerso(null), style: 'destructive' },
+                      {
+                        text: 'Remover',
+                        onPress: () => setCnhVerso(null),
+                        style: 'destructive',
+                      },
                     ]
                   )
                 }

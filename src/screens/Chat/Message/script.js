@@ -4,10 +4,11 @@ import {
   onSnapshot,
   query,
   orderBy,
+  doc,
+  setDoc,
 } from 'firebase/firestore'
 import { db } from '../../../config/firebase'
 
-// Função para escutar mensagens de um chat e disparar callback com as mensagens formatadas
 export function subscribeMessages(chatId, onMessagesReceived) {
   const messagesRef = collection(db, 'Conversas', chatId, 'mensagens')
   const q = query(messagesRef, orderBy('createdAt', 'desc'))
@@ -22,7 +23,7 @@ export function subscribeMessages(chatId, onMessagesReceived) {
         user: {
           _id: data.user._id,
           name: data.user.name,
-          avatar: data.user.avatar || data.user.profileImageUrl || '', // <- aqui está o segredo
+          avatar: data.user.avatar || data.user.profileImageUrl || '',
         },
       }
     })
@@ -30,8 +31,59 @@ export function subscribeMessages(chatId, onMessagesReceived) {
   })
 }
 
-// Função para enviar uma mensagem no chat
-export async function sendMessage(chatId, message) {
-  const messagesRef = collection(db, 'Conversas', chatId, 'mensagens')
-  await addDoc(messagesRef, message)
+export async function sendMessage(chatId, message, user, profile) {
+  try {
+    if (!chatId || chatId.includes('undefined')) {
+      console.error('Chat ID inválido:', chatId)
+      throw new Error('ID do chat inválido')
+    }
+
+    const messagesRef = collection(db, 'Conversas', chatId, 'mensagens')
+    const conversationRef = doc(db, 'Conversas', chatId)
+
+    const lastMessageData = {
+      text: message.text,
+      createdAt: new Date(),
+      senderId: user.uid || user.id,
+      senderName: user.username,
+    }
+
+    const participants = {
+      [user.uid || user.id]: {
+        id: user.uid || user.id,
+        name: user.username,
+        type: user.type,
+        profileImageUrl: user.profileImageUrl,
+        lastSeen: new Date(),
+      },
+      [profile.uid || profile.id]: {
+        id: profile.uid || profile.id,
+        name: profile.username,
+        type: profile.type,
+        profileImageUrl: profile.profileImageUrl,
+        lastSeen: new Date(),
+      },
+    }
+
+    await setDoc(
+      conversationRef,
+      {
+        chatId: chatId,
+        participants: participants,
+        lastMessage: lastMessageData,
+        updatedAt: new Date(),
+        users: [user.uid || user.id, profile.uid || profile.id],
+      },
+      { merge: true }
+    )
+    await addDoc(messagesRef, {
+      ...message,
+      recipientId: profile.uid || profile.id,
+      senderId: user.uid || user.id,
+      createdAt: new Date(),
+    })
+  } catch (error) {
+    console.error('Erro ao enviar mensagem:', error)
+    throw error
+  }
 }
