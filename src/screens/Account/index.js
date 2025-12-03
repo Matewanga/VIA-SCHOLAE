@@ -71,7 +71,11 @@ export const Account = () => {
               height={70}
               ft={20}
               fw="bold"
-              onPress={() => navigation.navigate('ExibirCriancas')}
+              onPress={() =>
+                navigation.navigate('ExibirCriancas', {
+                  responsavelId: user.uid,
+                })
+              }
               icon={<Ionicons name="people" size={35} color="text" />}
             />
           )}

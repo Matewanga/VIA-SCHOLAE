@@ -4,6 +4,7 @@ import { CustomText } from '../../components'
 
 export function Timeline({ distancia, duracao }) {
   if (!distancia || !duracao) return null
+
   return (
     <View
       style={{
@@ -31,7 +32,7 @@ export function Timeline({ distancia, duracao }) {
           </CustomText>
 
           <CustomText ft={22} fw="bold" txtColor="#000">
-            {duracao ? `${Math.floor(duracao / 60)}min` : '...'}
+            {Math.floor(duracao / 60)}min
           </CustomText>
         </View>
 
@@ -41,7 +42,7 @@ export function Timeline({ distancia, duracao }) {
           </CustomText>
 
           <CustomText ft={22} fw="bold" txtColor="#000">
-            {distancia ? `${Math.round(distancia)}m` : '...'}
+            {Math.round(distancia)}m
           </CustomText>
         </View>
       </View>

@@ -20,6 +20,9 @@ import { Timeline } from './timeLine'
 export const Home = () => {
   const { user } = useUser()
 
+  const [vanPosition, setVanPosition] = useState(null)
+  const [progressIndex, setProgressIndex] = useState(0)
+
   const [rotas, setRotas] = useState([])
   const [rotaAtual, setRotaAtual] = useState(null)
   const [rotaGeojson, setRotaGeojson] = useState(null)
@@ -104,6 +107,49 @@ export const Home = () => {
 
     calc()
   }, [rotaAtual])
+
+  useEffect(() => {
+    if (!rotaGeojson || !rotaIniciada) return
+
+    const coords = rotaGeojson.geometry.coordinates
+
+    let index = 0
+
+    const interval = setInterval(() => {
+      if (index < coords.length) {
+        setVanPosition(coords[index])
+        setProgressIndex(index)
+
+        index++
+      } else {
+        clearInterval(interval)
+      }
+    }, 1500)
+
+    return () => clearInterval(interval)
+  }, [rotaGeojson, rotaIniciada])
+
+  useEffect(() => {
+    if (!rotaGeojson || progressIndex === 0) return
+
+    const coords = rotaGeojson.geometry.coordinates
+
+    const restante = coords.slice(progressIndex)
+    const restanteQuery = restante.map((p) => `${p[0]},${p[1]}`).join(';')
+
+    if (!restanteQuery) return
+
+    const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${restanteQuery}?geometries=geojson&access_token=pk.eyJ1IjoiY29vaW5nbXRjZG9hIiwiYSI6ImNtZHMxYTdmNDBveHAyaXBwNmk0cGRtbDUifQ.mzr4-ccJpyUD5cH08FtGbQ`
+
+    fetch(url)
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.routes && json.routes[0]) {
+          setDistancia(json.routes[0].distance)
+          setDuracao(json.routes[0].duration)
+        }
+      })
+  }, [progressIndex])
 
   const handleInicioClick = async () => {
     if (!isMotorista) return
@@ -296,6 +342,7 @@ export const Home = () => {
           rotaAtual={rotaAtual}
           rotaIniciada={rotaIniciada}
           isMotorista={isMotorista}
+          vanPosition={vanPosition}
         />
 
         {isMotorista && (
